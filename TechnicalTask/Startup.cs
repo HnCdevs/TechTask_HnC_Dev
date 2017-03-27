@@ -100,6 +100,8 @@ namespace TechnicalTask
             _container.Register<IRepository<Offering>, Repository<Offering>>(Lifestyle.Scoped);
             _container.Register<IRepository<Department>, Repository<Department>>(Lifestyle.Scoped);
 
+            //_container.Register<ILogger>(Lifestyle.Scoped);
+
             //_container.Register(typeof(IRepository<>), new[] { typeof(IRepository<>).Assembly });
 
             // Cross-wire ASP.NET services (if any). For instance:

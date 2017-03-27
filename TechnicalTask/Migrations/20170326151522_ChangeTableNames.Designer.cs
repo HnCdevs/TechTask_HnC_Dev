@@ -9,9 +9,10 @@ using TechnicalTask.Models;
 namespace TechnicalTask.Migrations
 {
     [DbContext(typeof(TtContext))]
-    partial class TtContextModelSnapshot : ModelSnapshot
+    [Migration("20170326151522_ChangeTableNames")]
+    partial class ChangeTableNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

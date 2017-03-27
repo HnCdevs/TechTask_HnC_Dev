@@ -9,6 +9,10 @@ namespace TechnicalTask.Data
         {
             Organization[] organizations;
             Country[] countries;
+            Business[] businesses;
+            Family[] families;
+            Offering[] offerings;
+            Department[] departments;
 
             context.Database.EnsureCreated();
 
@@ -72,72 +76,92 @@ namespace TechnicalTask.Data
             {
                 countries = context.Countries.ToArray();
             }
-            
 
             //OrganizationCountry
-            //var organizationCountries = new[]
-            //{
-            var o1 = new OrganizationCountry {OrganizationId = organizations[0].Id, CountryId = countries[0].Id};
-            var o2 = new OrganizationCountry {OrganizationId = organizations[0].Id, CountryId = countries[1].Id};
-            var o3 = new OrganizationCountry {OrganizationId = organizations[0].Id, CountryId = countries[2].Id};
-            var o4 = new OrganizationCountry {OrganizationId = organizations[1].Id, CountryId = countries[0].Id};
-            //};
+            if (!context.OrganizationCountries.Any())
+            {
+                var organizationCountries = new[]
+                {
+                    new OrganizationCountry {OrganizationId = organizations[0].Id, CountryId = countries[0].Id},
+                    new OrganizationCountry {OrganizationId = organizations[0].Id, CountryId = countries[1].Id},
+                    new OrganizationCountry {OrganizationId = organizations[0].Id, CountryId = countries[2].Id},
+                    new OrganizationCountry {OrganizationId = organizations[1].Id, CountryId = countries[0].Id},
+                };
 
-            context.OrganizationCountries.AddRange(new [] {o1, o2, o4, o3});
-            context.SaveChanges();
+                context.OrganizationCountries.AddRange(organizationCountries);
+                context.SaveChanges();
+            }
 
             //Businesses
-            var businesses = new[]
+            if (!context.Businesses.Any())
             {
-                new Business {Name = "GIS", CountryId = 1},
-                new Business {Name = "CEO", CountryId = 3}
-            };
+                businesses = new[]
+                {
+                    new Business {Name = "GIS", CountryId = countries[0].Id},
+                    new Business {Name = "CEO", CountryId = countries[2].Id}
+                };
 
-            foreach (var business in businesses)
-            {
-                context.Businesses.Add(business);
+                context.Businesses.AddRange(businesses);
+                context.SaveChanges();
             }
-            context.SaveChanges();
+            else
+            {
+                businesses = context.Businesses.ToArray();
+            }
 
             //Families
-            var families = new[]
+            if (!context.Families.Any())
             {
-                new Family {Name = "Cloud", BusinessId = 1},
-                new Family {Name = "Insurance", BusinessId = 1},
-                new Family {Name = "Cyber", BusinessId = 2}
-            };
+                families = new[]
+                {
+                    new Family {Name = "Cloud", BusinessId = businesses[0].Id},
+                    new Family {Name = "Insurance", BusinessId = businesses[0].Id},
+                    new Family {Name = "Cyber", BusinessId = businesses[1].Id}
+                };
 
-            foreach (var family in families)
-            {
-                context.Families.Add(family);
+                context.Families.AddRange(families);
+                context.SaveChanges();
             }
-            context.SaveChanges();
+            else
+            {
+                families = context.Families.ToArray();
+            }
+
 
             //Offerings
-            var offerings = new[]
+            if (!context.Offerings.Any())
             {
-                new Offering {Name = "Cloud Compute", FamilyId = 2},
-                new Offering {Name = "Cyber Consulting Services", FamilyId = 1},
-            };
+                offerings = new[]
+                {
+                    new Offering {Name = "Cloud Compute", FamilyId = families[1].Id},
+                    new Offering {Name = "Cyber Consulting Services", FamilyId = families[0].Id},
+                };
 
-            foreach (var offering in offerings)
-            {
-                context.Offerings.Add(offering);
+                context.Offerings.AddRange(offerings);
+                context.SaveChanges();
             }
-            context.SaveChanges();
+            else
+            {
+                offerings = context.Offerings.ToArray();
+            }
+
 
             //Departments
-            var departments = new[]
+            if (!context.Departments.Any())
             {
-                new Department {Name = "Dept. 1", OfferingId = 1},
-                new Department {Name = "Dept. 2", OfferingId = 2}
-            };
+                departments = new[]
+                {
+                    new Department {Name = "Dept. 1", OfferingId = offerings[0].Id},
+                    new Department {Name = "Dept. 2", OfferingId = offerings[1].Id}
+                };
 
-            foreach (var department in departments)
-            {
-                context.Departments.Add(department);
+                context.Departments.AddRange(departments);
+                context.SaveChanges();
             }
-            context.SaveChanges();
+            else
+            {
+                departments = context.Departments.ToArray();
+            }
         }
     }
 }

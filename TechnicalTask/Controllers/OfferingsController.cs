@@ -39,11 +39,11 @@ namespace TechnicalTask.Controllers
             _repository.Create(offering);
         }
         
-        // PUT: api/Offerings/5
-        [HttpPut("{id}")]
-        public void Put([FromBody]Offering offering)
+        // PUT: api/Offerings
+        [HttpPut]
+        public void Put(int id, [FromBody]Offering offering)
         {
-            _repository.Update(offering);
+            _repository.Update(id, offering);
         }
 
         // DELETE: api/Offerings/5

@@ -9,9 +9,9 @@ namespace TechnicalTask.Controllers
     [Route("api/Organizations")]
     public class OrganizationsController : Controller
     {
-        private readonly IRepository<Organization> _repository;
+        private readonly OrganizationRepository _repository;
 
-        public OrganizationsController(IRepository<Organization> repository)
+        public OrganizationsController(OrganizationRepository repository)
         {
             _repository = repository;
         }
@@ -39,11 +39,11 @@ namespace TechnicalTask.Controllers
             _repository.Create(organization);
         }
         
-        // PUT: api/Organizations/5
-        [HttpPut("{id}")]
-        public void Put([FromBody]Organization organization)
+        // PUT: api/Organizations
+        [HttpPut]
+        public void Put(int id, [FromBody]Organization organization)
         {
-            _repository.Update(organization);
+            _repository.Update(id, organization);
         }
         
         // DELETE: api/Organizations/5

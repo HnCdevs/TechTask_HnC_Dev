@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace TechnicalTask.Models
 {
@@ -12,6 +13,7 @@ namespace TechnicalTask.Models
         public string Name { get; set; }
         public string Code { get; set; }
 
+        [JsonIgnore]
         public ICollection<OrganizationCountry> OrganizationCountries { get; set; }
         public ICollection<Business> Businesses { get; set; }
 

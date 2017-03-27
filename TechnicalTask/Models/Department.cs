@@ -11,6 +11,5 @@ namespace TechnicalTask.Models
         public string Name { get; set; }
 
         public int OfferingId { get; set; }
-        public Offering Offering { get; set; }
     }
 }

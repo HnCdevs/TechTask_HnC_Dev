@@ -9,9 +9,9 @@ namespace TechnicalTask.Controllers
     [Route("api/Countries")]
     public class CountriesController : Controller
     {
-        private readonly IRepository<Country> _repository;
+        private readonly CountryRepository _repository;
 
-        public CountriesController(IRepository<Country> repository)
+        public CountriesController(CountryRepository repository)
         {
             _repository = repository;
         }
@@ -34,16 +34,16 @@ namespace TechnicalTask.Controllers
         
         // POST: api/Countries
         [HttpPost]
-        public void Post([FromBody]Country country)
+        public void Post([FromBody]CountryInput country)
         {
             _repository.Create(country);
         }
         
-        // PUT: api/Countries/5
+        // PUT: api/Countries
         [HttpPut("{id}")]
-        public void Put([FromBody]Country country)
+        public void Put(int id, [FromBody]Country country)
         {
-            _repository.Update(country);
+            _repository.Update(id, country);
         }
         
         // DELETE: api/Countries/5

@@ -39,11 +39,11 @@ namespace TechnicalTask.Controllers
             _repository.Create(family);
         }
         
-        // PUT: api/Families/5
-        [HttpPut("{id}")]
-        public void Put([FromBody]Family family)
+        // PUT: api/Families
+        [HttpPut]
+        public void Put(int id, [FromBody]Family family)
         {
-            _repository.Update(family);
+            _repository.Update(id, family);
         }
 
         // DELETE: api/Families/5

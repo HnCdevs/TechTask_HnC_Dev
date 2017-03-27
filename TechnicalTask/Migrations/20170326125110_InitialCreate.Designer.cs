@@ -9,7 +9,7 @@ using TechnicalTask.Models;
 namespace TechnicalTask.Migrations
 {
     [DbContext(typeof(TtContext))]
-    [Migration("20170325230502_InitialCreate")]
+    [Migration("20170326125110_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,13 +116,18 @@ namespace TechnicalTask.Migrations
 
             modelBuilder.Entity("TechnicalTask.Models.OrganizationCountry", b =>
                 {
-                    b.Property<int>("OrganizationId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("CountryId");
 
-                    b.HasKey("OrganizationId", "CountryId");
+                    b.Property<int>("OrganizationId");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("OrganizationCountries");
                 });
@@ -179,12 +184,12 @@ namespace TechnicalTask.Migrations
 
             modelBuilder.Entity("TechnicalTask.Models.OrganizationCountry", b =>
                 {
-                    b.HasOne("TechnicalTask.Models.Organization", "Organization")
+                    b.HasOne("TechnicalTask.Models.Country", "Country")
                         .WithMany("OrganizationCountries")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TechnicalTask.Models.Country", "Country")
+                    b.HasOne("TechnicalTask.Models.Organization", "Organization")
                         .WithMany("OrganizationCountries")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade);

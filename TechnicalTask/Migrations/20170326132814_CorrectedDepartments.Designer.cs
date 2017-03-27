@@ -9,9 +9,10 @@ using TechnicalTask.Models;
 namespace TechnicalTask.Migrations
 {
     [DbContext(typeof(TtContext))]
-    partial class TtContextModelSnapshot : ModelSnapshot
+    [Migration("20170326132814_CorrectedDepartments")]
+    partial class CorrectedDepartments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -30,7 +31,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Businesses");
+                    b.ToTable("Business");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.Country", b =>
@@ -44,7 +45,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Country");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.Department", b =>
@@ -60,7 +61,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasIndex("OfferingId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.Family", b =>
@@ -76,7 +77,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasIndex("BusinessId");
 
-                    b.ToTable("Families");
+                    b.ToTable("Family");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.Offering", b =>
@@ -92,7 +93,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasIndex("FamilyId");
 
-                    b.ToTable("Offerings");
+                    b.ToTable("Offering");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.Organization", b =>
@@ -110,7 +111,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("Organization");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.OrganizationCountry", b =>
@@ -146,7 +147,7 @@ namespace TechnicalTask.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("TechnicalTask.Models.Business", b =>

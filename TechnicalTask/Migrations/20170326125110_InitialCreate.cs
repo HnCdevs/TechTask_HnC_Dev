@@ -79,22 +79,24 @@ namespace TechnicalTask.Migrations
                 name: "OrganizationCountries",
                 columns: table => new
                 {
-                    OrganizationId = table.Column<int>(nullable: false),
-                    CountryId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CountryId = table.Column<int>(nullable: false),
+                    OrganizationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrganizationCountries", x => new { x.OrganizationId, x.CountryId });
+                    table.PrimaryKey("PK_OrganizationCountries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrganizationCountries_Organization_CountryId",
+                        name: "FK_OrganizationCountries_Country_CountryId",
                         column: x => x.CountryId,
-                        principalTable: "Organization",
+                        principalTable: "Country",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrganizationCountries_Country_OrganizationId",
+                        name: "FK_OrganizationCountries_Organization_OrganizationId",
                         column: x => x.OrganizationId,
-                        principalTable: "Country",
+                        principalTable: "Organization",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -183,6 +185,11 @@ namespace TechnicalTask.Migrations
                 name: "IX_OrganizationCountries_CountryId",
                 table: "OrganizationCountries",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrganizationCountries_OrganizationId",
+                table: "OrganizationCountries",
+                column: "OrganizationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

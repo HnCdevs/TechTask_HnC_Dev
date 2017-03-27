@@ -26,15 +26,16 @@ namespace TechnicalTask.Repository
             return item;
         }
 
-        public void Create(T item)
+        public virtual void Create(T item)
         {
             Context.Entry(item).State = EntityState.Added;
             Context.SaveChanges();
         }
 
-        public void Update(T item)
+        public virtual void Update(int id, T item)
         {
-            Context.Entry(item).State = EntityState.Modified;
+            var entry = GetItem(id);
+            Context.Entry(entry).CurrentValues.SetValues(item);
             Context.SaveChanges();
         }
 

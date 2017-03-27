@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -11,10 +12,12 @@ namespace TechnicalTask.Controllers
     public class UsersController : Controller
     {
         private readonly IRepository<User> _repository;
+        private readonly ILogger _logger;
 
-        public UsersController(IRepository<User> repository)
+        public UsersController(IRepository<User> repository, ILoggerFactory logger)
         {
             _repository = repository;
+            _logger = logger.CreateLogger("User Controller");
         }
 
         // GET: api/Users
@@ -22,6 +25,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<User> Get()
         {
             var users = _repository.GetList();
+            _logger.LogError("awgwagwagwagawg");
             return users;
         }
 
@@ -40,11 +44,11 @@ namespace TechnicalTask.Controllers
             _repository.Create(user);
         }
 
-        // PUT api/Users/5
-        [HttpPut("{id}")]
-        public void Put([FromBody]User user)
+        // PUT api/Users
+        [HttpPut]
+        public void Put(int id, [FromBody]User user)
         {
-            _repository.Update(user);
+            _repository.Update(id, user);
         }
 
         // DELETE api/Users/5
