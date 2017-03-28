@@ -11,12 +11,16 @@ namespace TechnicalTask.Controllers
     {
         private readonly IRepository<Family> _repository;
 
-        public FamiliesController(IRepository<Family> repository)
+        public FamiliesController(FamilyRepository repository)
         {
             _repository = repository;
         }
 
         // GET: api/Families
+        /// <summary>
+        /// Get a list of families.
+        /// </summary>
+        /// <returns>Returns a list of families.</returns>
         [HttpGet]
         public IEnumerable<Family> Get()
         {
@@ -25,28 +29,46 @@ namespace TechnicalTask.Controllers
         }
 
         // GET: api/Families/5
+        /// <summary>
+        /// Get the family by id.
+        /// </summary>
+        /// <param name="id">Family id.</param>
+        /// <returns>Returns a single family.</returns>
         [HttpGet("{id}")]
         public Family Get(int id)
         {
             var family = _repository.GetItem(id);
             return family;
         }
-        
+
         // POST: api/Families
+        /// <summary>
+        /// Create a family and stores it in the database.
+        /// </summary>
+        /// <param name="family">Data to create a family.</param>
         [HttpPost]
         public void Post([FromBody]Family family)
         {
             _repository.Create(family);
         }
-        
-        // PUT: api/Families
-        [HttpPut]
+
+        // PUT: api/Families/5
+        /// <summary>
+        /// Update (HTTP PUT) an existing family with new data.
+        /// </summary>
+        /// <param name="id">Family id.</param>
+        /// <param name="family">Data to update the family.</param>
+        [HttpPut("{id}")]
         public void Put(int id, [FromBody]Family family)
         {
             _repository.Update(id, family);
         }
 
         // DELETE: api/Families/5
+        /// <summary>
+        /// Delete the family by id.
+        /// </summary>
+        /// <param name="id">Family id.</param>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

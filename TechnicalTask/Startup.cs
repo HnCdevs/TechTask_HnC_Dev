@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.IO;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
@@ -13,6 +15,7 @@ using TechnicalTask.Repository;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Integration.AspNetCore;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace TechnicalTask
 {   
@@ -45,6 +48,13 @@ namespace TechnicalTask
 
             services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(_container));
             services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(_container));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info {Title = "Tt API", Version = "v1"});
+                var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "TechnicalTask.xml");
+                c.IncludeXmlComments(filePath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +90,12 @@ namespace TechnicalTask
                 routes.MapRoute(
                     name: "default",
                     template: "api/{controller=Users}/{action=Get}/{id?}");
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tt API V1");
             });
 
             DbInitializer.Initialize(context);

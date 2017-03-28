@@ -13,6 +13,19 @@ namespace TechnicalTask.Repository
 
         public override void Create(Offering item)
         {
+            ValidationLogic(item);
+            base.Create(item);
+        }
+
+
+        public override void Update(int id, Offering item)
+        {
+            ValidationLogic(item);
+            base.Update(id, item);
+        }
+
+        private void ValidationLogic(Offering item)
+        {
             var family = Context.Families.Find(item.FamilyId);
 
             if (family != null)
@@ -22,9 +35,7 @@ namespace TechnicalTask.Repository
                 if (offerings.Any(x => x.Name == item.Name))
                 {
                     throw new Exception("The current offering already exists in this family!");
-                }
-
-                base.Create(item);
+                }        
             }
             else
             {

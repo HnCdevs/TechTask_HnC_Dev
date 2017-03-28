@@ -11,62 +11,54 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public void Create(CountryInput country)
+        public void Create(CountryInput item)
         {
-            var organization = Context.Organizations.Find(country.OrganizationId);
+            ValidationLogic(item);
+
+            var newCountry = item.ConvertToCountry(item);
+            Create(newCountry);
+
+            Context.OrganizationCountries.Add(new OrganizationCountry
+            {
+                OrganizationId = item.OrganizationId,
+                CountryId = newCountry.Id
+            });
+            Context.SaveChanges();           
+        }
+
+        public void Update(int id, CountryInput item)
+        {
+            ValidationLogic(item);
+
+            //var updatedCountry = item.ConvertToCountry(item);
+            //var org = Context.OrganizationCountries.Find(item.OrganizationId);
+            //org.OrganizationId = item.OrganizationId;
+            //var oldOrgCountry = Context.OrganizationCountries.Find(org.Id);
+            //Context.Entry(oldOrgCountry).CurrentValues.SetValues(org);
+
+            var updatedCountry = item.ConvertToCountry(item);
+            updatedCountry.Id = id;
+            Update(id, updatedCountry);
+        }
+
+        //Consultate
+        private void ValidationLogic(CountryInput item)
+        {
+            var organization = Context.Organizations.Find(item.OrganizationId);
 
             if (organization != null)
             {
-                var countries = Context.OrganizationCountries.Where(x => x.OrganizationId == country.OrganizationId).ToList();
+                var countries = Context.OrganizationCountries.Where(x => x.OrganizationId == item.OrganizationId).ToList();
 
-                if (countries.Any(x => x.Country.Name == country.Name))
+                if (countries.Any(x => x.Country.Name == item.Name))
                 {
                     throw new Exception("The current country already exists in this organization!");
                 }
-
-                var newCountry = country.ConvertToCountry(country);
-                Create(newCountry);
-                Context.OrganizationCountries.Add(new OrganizationCountry
-                {
-                    OrganizationId = country.OrganizationId,
-                    CountryId = newCountry.Id
-                });
-                Context.SaveChanges();
             }
             else
             {
                 throw new Exception("The selected organization doesn't exists!");
             }
         }
-
-        //public  void Update(int id, CountryInput item)
-        //{
-        //    var country = GetItem(id);
-        //    var s = country.OrganizationCountries.Any(x => x.)
-        //    var organization = Context.Organizations.Find(country.OrganizationId);
-
-        //    if (organization != null)
-        //    {
-        //        var countries = Context.OrganizationCountries.Where(x => x.OrganizationId == country.OrganizationId).ToList();
-
-        //        if (countries.Any(item => item.Country.Name == country.Name))
-        //        {
-        //            throw new Exception("The current country already exists in this organization!");
-        //        }
-
-        //        var newCountry = country.ConvertToCountry(country);
-        //        Create(newCountry);
-        //        Context.OrganizationCountries.Add(new OrganizationCountry
-        //        {
-        //            OrganizationId = country.OrganizationId,
-        //            CountryId = newCountry.Id
-        //        });
-        //        Context.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("The selected organization doesn't exists!");
-        //    }
-        //}
     }
 }

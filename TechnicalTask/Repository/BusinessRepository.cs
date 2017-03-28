@@ -13,6 +13,18 @@ namespace TechnicalTask.Repository
 
         public override void Create(Business item)
         {
+            ValidationLogic(item);
+            base.Create(item);
+        }
+
+        public override void Update(int id, Business item)
+        {
+            ValidationLogic(item);
+            base.Update(id, item);
+        }
+
+        private void ValidationLogic(Business item)
+        {
             var country = Context.Countries.Find(item.CountryId);
 
             if (country != null)
@@ -23,8 +35,6 @@ namespace TechnicalTask.Repository
                 {
                     throw new Exception("The current business already exists in this country!");
                 }
-
-                base.Create(item);
             }
             else
             {

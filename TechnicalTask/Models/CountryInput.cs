@@ -8,15 +8,15 @@ namespace TechnicalTask.Models
         public string Name { get; set; }
         public string Code { get; set; }
 
-        public Country ConvertToCountry(CountryInput convertibleInput)
+        public Country ConvertToCountry(CountryInput convertibleData)
         {
             var country = new Country
             {
-                Name = convertibleInput.Name,
-                Code = convertibleInput.Code,
+                Name = convertibleData.Name,
+                Code = convertibleData.Code,
                 OrganizationCountries = new List<OrganizationCountry>
                 {
-                    new OrganizationCountry {OrganizationId = convertibleInput.OrganizationId}
+                    new OrganizationCountry { OrganizationId = convertibleData.OrganizationId }
                 }
             };
 

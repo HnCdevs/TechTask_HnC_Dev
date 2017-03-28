@@ -9,7 +9,7 @@ namespace TechnicalTask.Controllers
     [Route("api/Organizations")]
     public class OrganizationsController : Controller
     {
-        private readonly OrganizationRepository _repository;
+        private readonly IRepository<Organization> _repository;
 
         public OrganizationsController(OrganizationRepository repository)
         {
@@ -17,6 +17,10 @@ namespace TechnicalTask.Controllers
         }
 
         // GET: api/Organizations
+        /// <summary>
+        /// Get a list of organizations.
+        /// </summary>
+        /// <returns>Returns a list of organizations.</returns>
         [HttpGet]
         public IEnumerable<Organization> Get()
         {
@@ -25,28 +29,46 @@ namespace TechnicalTask.Controllers
         }
 
         // GET: api/Organizations/5
+        /// <summary>
+        /// Get the organization by id.
+        /// </summary>
+        /// <param name="id">Organization id.</param>
+        /// <returns>Returns a single organization.</returns>
         [HttpGet("{id}")]
         public Organization Get(int id)
         {
             var organization = _repository.GetItem(id);
             return organization;
         }
-        
+
         // POST: api/Organizations
+        /// <summary>
+        /// Create a organization and stores it in the database.
+        /// </summary>
+        /// <param name="organization">Data to create a organization.</param>
         [HttpPost]
         public void Post([FromBody]Organization organization)
         {
             _repository.Create(organization);
         }
-        
-        // PUT: api/Organizations
-        [HttpPut]
+
+        // PUT: api/Organizations/5
+        /// <summary>
+        /// Update (HTTP PUT) an existing organization with new data.
+        /// </summary>
+        /// <param name="id">Organization id.</param>
+        /// <param name="organization">Data to update the organization.</param>
+        [HttpPut("{id}")]
         public void Put(int id, [FromBody]Organization organization)
         {
             _repository.Update(id, organization);
         }
-        
+
         // DELETE: api/Organizations/5
+        /// <summary>
+        /// Delete the organization by id.
+        /// </summary>
+        /// <param name="id">Organization id.</param>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

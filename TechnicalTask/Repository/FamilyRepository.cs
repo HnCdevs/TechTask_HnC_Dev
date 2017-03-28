@@ -13,6 +13,18 @@ namespace TechnicalTask.Repository
 
         public override void Create(Family item)
         {
+            ValidationLogic(item);
+            base.Create(item);
+        }
+
+        public override void Update(int id, Family item)
+        {
+            ValidationLogic(item);
+            base.Update(id, item);
+        }
+
+        private void ValidationLogic(Family item)
+        {
             var business = Context.Businesses.Find(item.BusinessId);
 
             if (business != null)
@@ -23,8 +35,6 @@ namespace TechnicalTask.Repository
                 {
                     throw new Exception("The current family already exists in this business!");
                 }
-
-                base.Create(item);
             }
             else
             {

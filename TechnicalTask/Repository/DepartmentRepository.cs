@@ -13,6 +13,18 @@ namespace TechnicalTask.Repository
 
         public override void Create(Department item)
         {
+            ValidationLogic(item);
+            base.Create(item);
+        }
+
+        public override void Update(int id, Department item)
+        {
+            ValidationLogic(item);
+            base.Update(id, item);
+        }
+
+        private void ValidationLogic(Department item)
+        {
             var offering = Context.Offerings.Find(item.OfferingId);
 
             if (offering != null)
@@ -23,13 +35,11 @@ namespace TechnicalTask.Repository
                 {
                     throw new Exception("The current department already exists in this offering!");
                 }
-
-                base.Create(item);
             }
             else
             {
                 throw new Exception("The selected offering doesn't exists!");
-            }         
+            }
         }
     }
 }

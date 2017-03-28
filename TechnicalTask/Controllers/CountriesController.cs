@@ -17,6 +17,10 @@ namespace TechnicalTask.Controllers
         }
 
         // GET: api/Countries
+        /// <summary>
+        /// Get a list of countries.
+        /// </summary>
+        /// <returns>Returns a list of countries.</returns>
         [HttpGet]
         public IEnumerable<Country> Get()
         {
@@ -25,28 +29,46 @@ namespace TechnicalTask.Controllers
         }
 
         // GET: api/Countries/5
+        /// <summary>
+        /// Get the country by id.
+        /// </summary>
+        /// <param name="id">Country id.</param>
+        /// <returns>Returns a single country.</returns>
         [HttpGet("{id}")]
         public Country Get(int id)
         {
             var country = _repository.GetItem(id);
             return country;
         }
-        
+
         // POST: api/Countries
+        /// <summary>
+        /// Create a country and stores it in the database.
+        /// </summary>
+        /// <param name="country">Data to create a country.</param>
         [HttpPost]
         public void Post([FromBody]CountryInput country)
         {
             _repository.Create(country);
         }
-        
-        // PUT: api/Countries
+
+        // PUT: api/Countries/5
+        /// <summary>
+        /// Update (HTTP PUT) an existing country with new data.
+        /// </summary>
+        /// <param name="id">Country id.</param>
+        /// <param name="country">Data to update the country.</param>
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Country country)
+        public void Put(int id, [FromBody]CountryInput country)
         {
             _repository.Update(id, country);
         }
         
         // DELETE: api/Countries/5
+        /// <summary>
+        /// Delete the country by id.
+        /// </summary>
+        /// <param name="id">Country id.</param>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
