@@ -68,7 +68,7 @@ namespace XUnitTests
 
             Expression<Func<Department, bool>> qw = department => true;
 
-            _context.Departments.All(qw) .Returns(false);
+            _context.Departments.All(qw).Returns(false);
             Assert.Equal(false, _repository.IsValid(item));
         }
         //[Fact]
