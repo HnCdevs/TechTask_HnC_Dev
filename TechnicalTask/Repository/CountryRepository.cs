@@ -11,24 +11,41 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public void Create(CountryInput item)
+        public override bool IsValid(Country item)
         {
-            ValidationLogic(item);
+            var organizationId = GetOrganizationId(item);
+            var organization = Context.Organizations.Find(organizationId);
 
-            var newCountry = item.ConvertToCountry(item);
-            Create(newCountry);
+            if (organization == null) return false;
+
+            var countries = Context.OrganizationCountries.Where(x => x.OrganizationId == organizationId).ToList();
+
+            return countries.All(x => x.Country.Name == item.Name);
+        }
+
+        public override void Create(Country item)
+        {
+            base.Create(item);
+
+            var organizationId = GetOrganizationId(item);
 
             Context.OrganizationCountries.Add(new OrganizationCountry
             {
-                OrganizationId = item.OrganizationId,
-                CountryId = newCountry.Id
+                OrganizationId = organizationId,
+                CountryId = item.Id
             });
             Context.SaveChanges();           
         }
 
-        public void Update(int id, CountryInput item)
+        private static int GetOrganizationId(Country item)
         {
-            ValidationLogic(item);
+            return item.OrganizationCountries.ToArray()[0].OrganizationId;
+        }
+
+        //Consultate
+        private void ValidationLogic(CountryInput item)
+        {
+
 
             //var updatedCountry = item.ConvertToCountry(item);
             //var org = Context.OrganizationCountries.Find(item.OrganizationId);
@@ -36,14 +53,6 @@ namespace TechnicalTask.Repository
             //var oldOrgCountry = Context.OrganizationCountries.Find(org.Id);
             //Context.Entry(oldOrgCountry).CurrentValues.SetValues(org);
 
-            var updatedCountry = item.ConvertToCountry(item);
-            updatedCountry.Id = id;
-            Update(id, updatedCountry);
-        }
-
-        //Consultate
-        private void ValidationLogic(CountryInput item)
-        {
             var organization = Context.Organizations.Find(item.OrganizationId);
 
             if (organization != null)
@@ -60,5 +69,7 @@ namespace TechnicalTask.Repository
                 throw new Exception("The selected organization doesn't exists!");
             }
         }
+
+        
     }
 }

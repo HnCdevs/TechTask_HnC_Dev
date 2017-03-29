@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalTask.Models;
@@ -49,7 +50,19 @@ namespace TechnicalTask.Controllers
         [HttpPost]
         public void Post([FromBody]Department department)
         {
-            _repository.Create(department);
+            if (department == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(department))
+            {
+                _repository.Create(department);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // PUT: api/Departments/5
@@ -61,7 +74,19 @@ namespace TechnicalTask.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]Department department)
         {
-            _repository.Update(id, department);
+            if (department == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(department))
+            {
+                _repository.Update(id, department);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // DELETE: api/Departments/5

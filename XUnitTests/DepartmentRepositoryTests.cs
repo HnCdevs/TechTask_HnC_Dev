@@ -12,40 +12,37 @@ namespace XUnitTests
 {
     public class DepartmentRepositoryTests
     {
-        private DbSet<Department> _mockSet;
-        private TtContext _mockContext;
+        private DbSet<Department> _mDeptSet;
+        private TtContext _mTtContext;
         private DepartmentRepository _repository;
 
         public DepartmentRepositoryTests()
         {
             var departments = new List<Department>
             {
-                new Department { Id = 1, Name = "BBB", OfferingId = 232}
+                new Department { Id = 1, Name = "DeptTest", OfferingId = 1}
             }.AsQueryable();
 
+            _mDeptSet = Substitute.For<DbSet<Department>, IQueryable<Department>>();
+            ((IQueryable<Department>)_mDeptSet).Provider.Returns(departments.Provider);
+            ((IQueryable<Department>)_mDeptSet).Expression.Returns(departments.Expression);
+            ((IQueryable<Department>)_mDeptSet).ElementType.Returns(departments.ElementType);
+            ((IQueryable<Department>)_mDeptSet).GetEnumerator().Returns(departments.GetEnumerator());
 
-            _mockSet = Substitute.For<DbSet<Department>, IQueryable<Department>>();
-            ((IQueryable<Department>)_mockSet).Provider.Returns(departments.Provider);
-            ((IQueryable<Department>)_mockSet).Expression.Returns(departments.Expression);
-            ((IQueryable<Department>)_mockSet).ElementType.Returns(departments.ElementType);
-            ((IQueryable<Department>)_mockSet).GetEnumerator().Returns(departments.GetEnumerator());
-
-            _mockContext = Substitute.For<TtContext>();
-            _mockContext.Departments.Returns(_mockSet);
-
+            _mTtContext = Substitute.For<TtContext>();
+            _mTtContext.Departments.Returns(_mDeptSet);
         }
 
         [Fact]
         public void CreateDepartmentTest()
         {
-
             var expected = new Offering() {Name = "BbB"};
-            _mockContext.Offerings.Find(Arg.Any<int>()).Returns(expected);
+            _mTtContext.Offerings.Find(Arg.Any<int>()).Returns(expected);
             
-            _repository = new DepartmentRepository(_mockContext);
+            _repository = new DepartmentRepository(_mTtContext);
             _repository.Create(new Department { Name = "DeptTest", OfferingId = 1 });
 
-            _mockContext.Received(1).SaveChanges();
+            _mTtContext.Received(1).SaveChanges();
         }
 
         [Fact]
@@ -53,9 +50,9 @@ namespace XUnitTests
         {
 
             Offering expected = null;
-            _mockContext.Offerings.Find(Arg.Any<int>()).Returns(expected);
+            _mTtContext.Offerings.Find(Arg.Any<int>()).Returns(expected);
 
-            _repository = new DepartmentRepository(_mockContext);
+            _repository = new DepartmentRepository(_mTtContext);
             Assert.Throws<Exception>(() => _repository.Create(new Department { Name = "DeptTest", OfferingId = 1 }));
         }
 
@@ -69,20 +66,20 @@ namespace XUnitTests
             }.AsQueryable();
 
 
-            _mockSet = Substitute.For<DbSet<Department>, IQueryable<Department>>();
-            ((IQueryable<Department>)_mockSet).Provider.Returns(departments.Provider);
-            ((IQueryable<Department>)_mockSet).Expression.Returns(departments.Expression);
-            ((IQueryable<Department>)_mockSet).ElementType.Returns(departments.ElementType);
-            ((IQueryable<Department>)_mockSet).GetEnumerator().Returns(departments.GetEnumerator());
+            _mDeptSet = Substitute.For<DbSet<Department>, IQueryable<Department>>();
+            ((IQueryable<Department>)_mDeptSet).Provider.Returns(departments.Provider);
+            ((IQueryable<Department>)_mDeptSet).Expression.Returns(departments.Expression);
+            ((IQueryable<Department>)_mDeptSet).ElementType.Returns(departments.ElementType);
+            ((IQueryable<Department>)_mDeptSet).GetEnumerator().Returns(departments.GetEnumerator());
 
-            _mockContext = Substitute.For<TtContext>();
-            _mockContext.Departments.Returns(_mockSet);
+            _mTtContext = Substitute.For<TtContext>();
+            _mTtContext.Departments.Returns(_mDeptSet);
 
 
             var expected = new Offering() { Name = "BbB", Id = 1 };
-            _mockContext.Offerings.Find(Arg.Any<int>()).Returns(expected);
+            _mTtContext.Offerings.Find(Arg.Any<int>()).Returns(expected);
 
-            _repository = new DepartmentRepository(_mockContext);
+            _repository = new DepartmentRepository(_mTtContext);
             Assert.Throws<Exception>(() => _repository.Create(new Department { Name = "DeptTest", OfferingId = 1 }));
         }
 

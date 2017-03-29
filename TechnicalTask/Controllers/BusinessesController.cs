@@ -11,7 +11,7 @@ namespace TechnicalTask.Controllers
     {
         private readonly IRepository<Business> _repository;
 
-        public BusinessesController(BusinessRepository repository)
+        public BusinessesController(IRepository<Business> repository)
         {
             _repository = repository;
         }

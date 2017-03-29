@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalTask.Models;
@@ -49,7 +50,20 @@ namespace TechnicalTask.Controllers
         [HttpPost]
         public void Post([FromBody]CountryInput country)
         {
-            _repository.Create(country);
+            if (country == null)
+            {
+                throw new ArgumentNullException();
+            }
+            var newCountry = CountryConverter(country);
+
+            if (_repository.IsValid(newCountry))
+            {
+                _repository.Create(newCountry);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // PUT: api/Countries/5
@@ -61,7 +75,21 @@ namespace TechnicalTask.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]CountryInput country)
         {
-            _repository.Update(id, country);
+            if (country == null)
+            {
+                throw new ArgumentNullException();
+            }
+            var updatableCountry = CountryConverter(country);
+            updatableCountry.Id = id;
+
+            if (_repository.IsValid(updatableCountry))
+            {
+                _repository.Update(id, updatableCountry);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
         
         // DELETE: api/Countries/5
@@ -73,6 +101,11 @@ namespace TechnicalTask.Controllers
         public void Delete(int id)
         {
             _repository.Delete(id);
+        }
+
+        private static Country CountryConverter(CountryInput country)
+        {
+            return country.ConvertToCountry(country);
         }
     }
 }

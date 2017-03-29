@@ -23,6 +23,11 @@ namespace TechnicalTask.Repository
             base.Update(id, item);
         }
 
+        public override bool IsValid(Business item)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ValidationLogic(Business item)
         {
             var country = Context.Countries.Find(item.CountryId);

@@ -11,16 +11,14 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public override void Create(Department item)
+        public override bool IsValid(Department item)
         {
-            ValidationLogic(item);
-            base.Create(item);
-        }
+            var offering = Context.Offerings.Find(item.OfferingId);
 
-        public override void Update(int id, Department item)
-        {
-            ValidationLogic(item);
-            base.Update(id, item);
+            if (offering == null) return false;
+            var departments = Context.Departments.Where(x => x.OfferingId == offering.Id).ToList();
+
+            return departments.All(x => x.Name != item.Name);
         }
 
         private void ValidationLogic(Department item)

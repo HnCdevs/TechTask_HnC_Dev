@@ -28,7 +28,7 @@ namespace TechnicalTask.Repository
 
         public virtual void Create(T item)
         {
-            Context.SetModify(item);
+            Context.Entry(item).State = EntityState.Added;
             Context.SaveChanges();
         }
 
@@ -42,9 +42,13 @@ namespace TechnicalTask.Repository
         public void Delete(int id)
         {
             var item = GetItem(id);
-            Context.Entry(item).State = EntityState.Deleted;
+            //Context.Entry(item).State = EntityState.Deleted;
             Context.SaveChanges();
         }
 
+        public virtual bool IsValid(T item)
+        {
+            return true;
+        }
     }
 }

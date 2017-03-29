@@ -11,5 +11,7 @@ namespace TechnicalTask.Repository
         void Create(T item);
         void Update(int id, T item);
         void Delete(int id);
+
+        bool IsValid(T item);
     }
 }

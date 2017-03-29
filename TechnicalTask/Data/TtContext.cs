@@ -12,7 +12,7 @@ namespace TechnicalTask.Data
 
         public virtual void SetModify<T>(T item) where T : class
         {
-            Entry(item).State = EntityState.Modified;
+            Entry(item).State = EntityState.Added;
         }
 
         public TtContext(DbContextOptions<TtContext> options) : base(options)

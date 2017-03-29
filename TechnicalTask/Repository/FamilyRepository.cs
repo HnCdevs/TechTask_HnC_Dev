@@ -23,6 +23,11 @@ namespace TechnicalTask.Repository
             base.Update(id, item);
         }
 
+        public override bool IsValid(Family item)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ValidationLogic(Family item)
         {
             var business = Context.Businesses.Find(item.BusinessId);

@@ -24,6 +24,11 @@ namespace TechnicalTask.Repository
             base.Update(id, item);
         }
 
+        public override bool IsValid(Offering item)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ValidationLogic(Offering item)
         {
             var family = Context.Families.Find(item.FamilyId);

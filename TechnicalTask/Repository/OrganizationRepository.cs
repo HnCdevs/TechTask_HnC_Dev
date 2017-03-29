@@ -16,5 +16,10 @@ namespace TechnicalTask.Repository
             var organizations = Context.Organizations.Include(x => x.OrganizationCountries).ThenInclude(x => x.Country).ThenInclude(x => x.Businesses).ThenInclude(x => x.Families).ThenInclude(x => x.Offerings).ThenInclude(x => x.Departments);
             return organizations;
         }
+
+        public override bool IsValid(Organization item)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
