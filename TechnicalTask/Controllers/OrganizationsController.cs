@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalTask.Models;
@@ -9,7 +10,7 @@ namespace TechnicalTask.Controllers
     [Route("api/Organizations")]
     public class OrganizationsController : Controller
     {
-        private readonly IRepository<Organization> _repository;
+        private readonly OrganizationRepository _repository;
 
         public OrganizationsController(OrganizationRepository repository)
         {
@@ -49,7 +50,19 @@ namespace TechnicalTask.Controllers
         [HttpPost]
         public void Post([FromBody]Organization organization)
         {
-            _repository.Create(organization);
+            if (organization == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(organization))
+            {
+                _repository.Create(organization);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // PUT: api/Organizations/5
@@ -61,7 +74,19 @@ namespace TechnicalTask.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]Organization organization)
         {
-            _repository.Update(id, organization);
+            if (organization == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(organization))
+            {
+                _repository.Update(id, organization);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // DELETE: api/Organizations/5

@@ -84,6 +84,7 @@ namespace TechnicalTask
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            //loggerFactory.AddFile("Logs/testlog.txt");
 
             app.UseMvc(routes =>
             {

@@ -54,7 +54,7 @@ namespace TechnicalTask.Controllers
             {
                 throw new ArgumentNullException();
             }
-            var newCountry = CountryConverter(country);
+            var newCountry = country.ConvertToCountry(country);
 
             if (_repository.IsValid(newCountry))
             {
@@ -79,8 +79,7 @@ namespace TechnicalTask.Controllers
             {
                 throw new ArgumentNullException();
             }
-            var updatableCountry = CountryConverter(country);
-            updatableCountry.Id = id;
+            var updatableCountry = country.ConvertToCountry(country);
 
             if (_repository.IsValid(updatableCountry))
             {
@@ -101,11 +100,6 @@ namespace TechnicalTask.Controllers
         public void Delete(int id)
         {
             _repository.Delete(id);
-        }
-
-        private static Country CountryConverter(CountryInput country)
-        {
-            return country.ConvertToCountry(country);
         }
     }
 }

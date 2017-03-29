@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalTask.Models;
@@ -9,7 +10,7 @@ namespace TechnicalTask.Controllers
     [Route("api/Families")]
     public class FamiliesController : Controller
     {
-        private readonly IRepository<Family> _repository;
+        private readonly FamilyRepository _repository;
 
         public FamiliesController(FamilyRepository repository)
         {
@@ -49,7 +50,19 @@ namespace TechnicalTask.Controllers
         [HttpPost]
         public void Post([FromBody]Family family)
         {
-            _repository.Create(family);
+            if (family == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(family))
+            {
+                _repository.Create(family);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // PUT: api/Families/5
@@ -61,7 +74,19 @@ namespace TechnicalTask.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]Family family)
         {
-            _repository.Update(id, family);
+            if (family == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(family))
+            {
+                _repository.Update(id, family);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // DELETE: api/Families/5

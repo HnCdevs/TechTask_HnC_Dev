@@ -8,10 +8,5 @@ namespace TechnicalTask.Repository
         public UserRepository(TtContext context) : base(context)
         {
         }
-
-        public override bool IsValid(User item)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

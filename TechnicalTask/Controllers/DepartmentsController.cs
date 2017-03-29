@@ -10,7 +10,7 @@ namespace TechnicalTask.Controllers
     [Route("api/Departments")]
     public class DepartmentsController : Controller
     {
-        private readonly IRepository<Department> _repository;
+        private readonly DepartmentRepository _repository;
 
         public DepartmentsController(DepartmentRepository repository)
         {

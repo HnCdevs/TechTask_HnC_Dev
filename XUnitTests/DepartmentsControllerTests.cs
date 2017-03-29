@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
+using NSubstitute.ClearExtensions;
 using TechnicalTask.Controllers;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
@@ -10,15 +11,28 @@ using Xunit;
 
 namespace XUnitTests
 {
-    public class DepartmentControllerTests : IClassFixture<RepoFixture>
+    public class DepartmentsControllerTests : IDisposable
     {
         private readonly DepartmentRepository _repository;
-        //private readonly DepartmentRepository _mockRepository;
         private readonly DepartmentsController _controller;
 
-        public DepartmentControllerTests(RepoFixture fixture)
+        public DepartmentsControllerTests()
         {
-            _repository = fixture.Repository;          
+            var list = new List<Department>
+            {
+                new Department { Id = 1, Name = "test 1", OfferingId = 2 },
+                new Department { Id = 2, Name = "test 2", OfferingId = 1 }
+
+            }.AsQueryable();
+
+            var mockContext = Substitute.For<TtContext>();
+            _repository = Substitute.For<DepartmentRepository>(mockContext);
+            _repository.GetList().Returns(list);
+            _repository.GetItem(Arg.Any<int>()).Returns(new Department { Id = 1, Name = "test 1", OfferingId = 1 });
+            _repository.Create(Arg.Any<Department>());
+            _repository.Update(Arg.Any<int>(), Arg.Any<Department>());
+            _repository.Delete(Arg.Any<int>());
+          
             _controller = new DepartmentsController(_repository);
         }
 
@@ -51,7 +65,7 @@ namespace XUnitTests
         }
 
         [Fact]
-        public void CreateInvalidDepartmentTest()
+        public void CreateInvalidTest()
         {
             _repository.IsValid(Arg.Any<Department>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Post(new Department()));
@@ -60,52 +74,34 @@ namespace XUnitTests
         [Fact]
         public void UpdateBadInputTest()
         {
-            Assert.Throws<ArgumentNullException>(() => _controller.Put(Arg.Any<int>(), null));
+            Assert.Throws<ArgumentNullException>(() => _controller.Put(0, null));
         }
 
         [Fact]
         public void UpdateGoodTest()
         {
             _repository.IsValid(Arg.Any<Department>()).Returns(true);
-            _controller.Put(Arg.Any<int>(), new Department());
+            _controller.Put(0, new Department());
             _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<Department>());
         }
 
         [Fact]
-        public void UpdateInvalidDepartmentTest()
+        public void UpdateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Department>()).Returns(Arg.Is(false));
-            Assert.Throws<ArgumentException>(() => _controller.Put(Arg.Any<int>(), new Department()));
+            _repository.IsValid(Arg.Any<Department>()).Returns(false);
+            Assert.Throws<ArgumentException>(() => _controller.Put(0, new Department()));
         }
 
-        //[Fact]
-        //public void DeleteTest()
-        //{
-        //    _repository.Delete(Arg.Any<int>());
-        //    _repository.Received(1).Delete(Arg.Any<int>());
-        //}     
-    }
-
-    public class RepoFixture
-    {
-        public DepartmentRepository Repository { get; }
-
-        public RepoFixture()
+        [Fact]
+        public void DeleteTest()
         {
-            IQueryable<Department> departments = new List<Department>
-            {
-                new Department { Id = 1, Name = "test 1", OfferingId = 2 },
-                new Department { Id =  2, Name = "test 2", OfferingId = 1 }
+            _controller.Delete(0);
+            _repository.Received(1).Delete(Arg.Any<int>());
+        }
 
-            }.AsQueryable();
-
-            var mockContext = Substitute.For<TtContext>();
-            Repository = Substitute.For<DepartmentRepository>(mockContext);
-            Repository.GetList().Returns(departments);
-            Repository.GetItem(Arg.Any<int>()).Returns(new Department{Id = 1, Name = "test 1", OfferingId = 1});
-            Repository.Create(Arg.Any<Department>());
-            Repository.Update(Arg.Any<int>(), Arg.Any<Department>());
-            Repository.Delete(Arg.Any<int>());
+        public void Dispose()
+        {
+            _repository.ClearSubstitute();
         }
     }
 }

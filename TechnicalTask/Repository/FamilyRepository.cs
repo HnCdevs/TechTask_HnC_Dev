@@ -11,40 +11,15 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public override void Create(Family item)
-        {
-            ValidationLogic(item);
-            base.Create(item);
-        }
-
-        public override void Update(int id, Family item)
-        {
-            ValidationLogic(item);
-            base.Update(id, item);
-        }
-
         public override bool IsValid(Family item)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ValidationLogic(Family item)
         {
             var business = Context.Businesses.Find(item.BusinessId);
 
-            if (business != null)
-            {
-                var families = Context.Families.Where(x => x.BusinessId == item.BusinessId);
+            if (business == null) return false;
 
-                if (families.Any(x => x.Name == item.Name))
-                {
-                    throw new Exception("The current family already exists in this business!");
-                }
-            }
-            else
-            {
-                throw new Exception("The selected business doesn't exists!");
-            }
+            var families = Context.Families.Where(x => x.BusinessId == business.Id).ToList();
+
+            return families.All(x => x.Name != item.Name);
         }
     }
 }

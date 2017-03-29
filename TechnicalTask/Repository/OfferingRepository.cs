@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 
@@ -11,41 +10,15 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public override void Create(Offering item)
-        {
-            ValidationLogic(item);
-            base.Create(item);
-        }
-
-
-        public override void Update(int id, Offering item)
-        {
-            ValidationLogic(item);
-            base.Update(id, item);
-        }
-
         public override bool IsValid(Offering item)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ValidationLogic(Offering item)
         {
             var family = Context.Families.Find(item.FamilyId);
 
-            if (family != null)
-            {
-                var offerings = Context.Offerings.Where(x => x.FamilyId == family.Id).ToList();
+            if (family == null) return false;
 
-                if (offerings.Any(x => x.Name == item.Name))
-                {
-                    throw new Exception("The current offering already exists in this family!");
-                }        
-            }
-            else
-            {
-                throw new Exception("The selected family doesn't exists!");
-            }
-        }
+            var offerings = Context.Offerings.Where(x => x.FamilyId == family.Id).ToList();
+
+            return offerings.All(x => x.Name != item.Name);
+        }       
     }
 }

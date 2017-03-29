@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalTask.Models;
@@ -9,9 +10,9 @@ namespace TechnicalTask.Controllers
     [Route("api/Businesses")]
     public class BusinessesController : Controller
     {
-        private readonly IRepository<Business> _repository;
+        private readonly BusinessRepository _repository;
 
-        public BusinessesController(IRepository<Business> repository)
+        public BusinessesController(BusinessRepository repository)
         {
             _repository = repository;
         }
@@ -49,7 +50,19 @@ namespace TechnicalTask.Controllers
         [HttpPost]
         public void Post([FromBody]Business business)
         {
-            _repository.Create(business);
+            if (business == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(business))
+            {
+                _repository.Create(business);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // PUT: api/Businesses/5
@@ -61,7 +74,19 @@ namespace TechnicalTask.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]Business business)
         {
-            _repository.Update(id, business);
+            if (business == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (_repository.IsValid(business))
+            {
+                _repository.Update(id, business);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         // DELETE: api/Businesses/5

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 
@@ -40,36 +39,6 @@ namespace TechnicalTask.Repository
         private static int GetOrganizationId(Country item)
         {
             return item.OrganizationCountries.ToArray()[0].OrganizationId;
-        }
-
-        //Consultate
-        private void ValidationLogic(CountryInput item)
-        {
-
-
-            //var updatedCountry = item.ConvertToCountry(item);
-            //var org = Context.OrganizationCountries.Find(item.OrganizationId);
-            //org.OrganizationId = item.OrganizationId;
-            //var oldOrgCountry = Context.OrganizationCountries.Find(org.Id);
-            //Context.Entry(oldOrgCountry).CurrentValues.SetValues(org);
-
-            var organization = Context.Organizations.Find(item.OrganizationId);
-
-            if (organization != null)
-            {
-                var countries = Context.OrganizationCountries.Where(x => x.OrganizationId == item.OrganizationId).ToList();
-
-                if (countries.Any(x => x.Country.Name == item.Name))
-                {
-                    throw new Exception("The current country already exists in this organization!");
-                }
-            }
-            else
-            {
-                throw new Exception("The selected organization doesn't exists!");
-            }
-        }
-
-        
+        }               
     }
 }

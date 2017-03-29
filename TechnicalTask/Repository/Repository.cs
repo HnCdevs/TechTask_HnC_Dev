@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using TechnicalTask.Data;
 
 namespace TechnicalTask.Repository
@@ -28,21 +27,21 @@ namespace TechnicalTask.Repository
 
         public virtual void Create(T item)
         {
-            Context.Entry(item).State = EntityState.Added;
+            Context.SetAdded(item);
             Context.SaveChanges();
         }
 
         public virtual void Update(int id, T item)
         {
             var entry = GetItem(id);
-            Context.Entry(entry).CurrentValues.SetValues(item);
+            Context.SetValues(entry, item);
             Context.SaveChanges();
         }
 
         public void Delete(int id)
         {
             var item = GetItem(id);
-            //Context.Entry(item).State = EntityState.Deleted;
+            Context.SetDeleted(item);
             Context.SaveChanges();
         }
 

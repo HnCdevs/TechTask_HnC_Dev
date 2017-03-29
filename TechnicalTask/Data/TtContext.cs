@@ -10,15 +10,24 @@ namespace TechnicalTask.Data
         {
         }
 
-        public virtual void SetModify<T>(T item) where T : class
+        public virtual void SetAdded<T>(T item) where T : class
         {
             Entry(item).State = EntityState.Added;
+        }
+
+        public virtual void SetValues<T>(T entry, T item) where T : class
+        {
+            Entry(entry).CurrentValues.SetValues(item);
+        }
+
+        public virtual void SetDeleted<T>(T item) where T : class
+        {
+            Entry(item).State = EntityState.Deleted;
         }
 
         public TtContext(DbContextOptions<TtContext> options) : base(options)
         {
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
