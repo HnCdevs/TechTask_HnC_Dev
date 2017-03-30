@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ClearExtensions;
 using TechnicalTask.Controllers;
@@ -9,7 +10,7 @@ using TechnicalTask.Models;
 using TechnicalTask.Repository;
 using Xunit;
 
-namespace XUnitTests
+namespace XUnitTests.ControllerTests
 {
     public class UsersControllerTests : IDisposable
     {
@@ -33,7 +34,8 @@ namespace XUnitTests
             _repository.Update(Arg.Any<int>(), Arg.Any<User>());
             _repository.Delete(Arg.Any<int>());
 
-            _controller = new UsersController(_repository);
+            var mockLogger = Substitute.For<ILoggerFactory>();
+            _controller = new UsersController(_repository, mockLogger);
         }
 
         [Fact]

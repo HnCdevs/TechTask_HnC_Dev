@@ -11,7 +11,6 @@ using Microsoft.Extensions.PlatformAbstractions;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
-
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Integration.AspNetCore;
@@ -72,25 +71,17 @@ namespace TechnicalTask
 
             InitializeContainer(app);
 
-            //_container.Register<CustomMiddleware>();
-
             _container.Verify();
-
-            // Add custom middleware
-            //app.Use(async (httpContext, next) =>
-            //{
-            //    await _container.GetInstance<CustomMiddleware>().Invoke(httpContext, next);
-            //});
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            //loggerFactory.AddFile("Logs/testlog.txt");
+            loggerFactory.AddFile("Logs/testlog.txt");
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "api/{controller=Users}/{action=Get}/{id?}");
+                    template: "api /{controller=Users}/{action=Get}/{id?}");
             });
 
             app.UseSwagger();
@@ -116,10 +107,6 @@ namespace TechnicalTask
             _container.Register<IRepository<Family>, Repository<Family>>(Lifestyle.Scoped);
             _container.Register<IRepository<Offering>, Repository<Offering>>(Lifestyle.Scoped);
             _container.Register<IRepository<Department>, Repository<Department>>(Lifestyle.Scoped);
-
-            //_container.Register<ILogger>(Lifestyle.Scoped);
-
-            //_container.Register(typeof(IRepository<>), new[] { typeof(IRepository<>).Assembly });
 
             // Cross-wire ASP.NET services (if any). For instance:
             _container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());

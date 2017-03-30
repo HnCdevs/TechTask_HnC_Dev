@@ -16,6 +16,9 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.24.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.24.0" />
+    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.24.0.672" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />

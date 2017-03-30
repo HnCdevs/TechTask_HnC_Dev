@@ -12,21 +12,21 @@ namespace TechnicalTask.Repository
 
         public override bool IsValid(Country item)
         {
-            var organizationId = GetOrganizationId(item);
+            var organizationId = item.OrganizationCountries.ToArray()[0].OrganizationId;
             var organization = Context.Organizations.Find(organizationId);
 
             if (organization == null) return false;
 
             var countries = Context.OrganizationCountries.Where(x => x.OrganizationId == organizationId).ToList();
 
-            return countries.All(x => x.Country.Name == item.Name);
+            return countries.All(x => x.Country.Name != item.Name);
         }
 
         public override void Create(Country item)
         {
             base.Create(item);
 
-            var organizationId = GetOrganizationId(item);
+            var organizationId = item.OrganizationCountries.ToArray()[0].OrganizationId;
 
             Context.OrganizationCountries.Add(new OrganizationCountry
             {
@@ -34,11 +34,6 @@ namespace TechnicalTask.Repository
                 CountryId = item.Id
             });
             Context.SaveChanges();           
-        }
-
-        private static int GetOrganizationId(Country item)
-        {
-            return item.OrganizationCountries.ToArray()[0].OrganizationId;
-        }               
+        }         
     }
 }

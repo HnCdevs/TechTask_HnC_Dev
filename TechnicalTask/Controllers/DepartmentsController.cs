@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -11,10 +12,12 @@ namespace TechnicalTask.Controllers
     public class DepartmentsController : Controller
     {
         private readonly DepartmentRepository _repository;
+        private readonly ILogger _logger;
 
-        public DepartmentsController(DepartmentRepository repository)
+        public DepartmentsController(DepartmentRepository repository, ILoggerFactory loggerFactory)
         {
             _repository = repository;
+            _logger = loggerFactory.CreateLogger("Departments Controller");
         }
 
         // GET: api/Departments
@@ -25,7 +28,10 @@ namespace TechnicalTask.Controllers
         [HttpGet]
         public IEnumerable<Department> Get()
         {
+            _logger.LogInformation("Departments.Get called. Without arguments.");
             var departments = _repository.GetList();
+
+            _logger.LogTrace("Departments.Get ended. Return all Departments.");
             return departments;
         }
 
@@ -38,7 +44,10 @@ namespace TechnicalTask.Controllers
         [HttpGet("{id}")]
         public Department Get(int id)
         {
+            _logger.LogInformation($"Departments.Get called. Arguments: Id = {id}.");
             var department = _repository.GetItem(id);
+
+            _logger.LogTrace($"Departments.Get ended. Return Department with Id = {id}.");
             return department;
         }
 
@@ -52,15 +61,19 @@ namespace TechnicalTask.Controllers
         {
             if (department == null)
             {
+                _logger.LogError("Departments.Post. Argument \"department\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Departments.Post called. Arguments: department Name = {department.Name}.");
 
             if (_repository.IsValid(department))
             {
                 _repository.Create(department);
+                _logger.LogTrace("Departments.Post ended. Department successfully created.");
             }
             else
             {
+                _logger.LogError("Departments.Post. Argument: department Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -76,15 +89,19 @@ namespace TechnicalTask.Controllers
         {
             if (department == null)
             {
+                _logger.LogError("Departments.Put. Argument \"department\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Departments.Put called. Arguments: Id = {id}, department Name = {department.Name}.");
 
             if (_repository.IsValid(department))
             {
                 _repository.Update(id, department);
+                _logger.LogTrace("Departments.Put ended. Department successfully updated.");
             }
             else
             {
+                _logger.LogError("Departments.Put. Argument: department Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -97,7 +114,10 @@ namespace TechnicalTask.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _logger.LogInformation($"Departments.Delete called. Arguments: Id = {id}.");
+
             _repository.Delete(id);
+            _logger.LogTrace("Departments.Delete ended. Department successfully deleted.");
         }
     }
 }

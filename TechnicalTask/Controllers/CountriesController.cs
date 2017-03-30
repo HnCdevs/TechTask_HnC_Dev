@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -11,10 +12,12 @@ namespace TechnicalTask.Controllers
     public class CountriesController : Controller
     {
         private readonly CountryRepository _repository;
+        private readonly ILogger _logger;
 
-        public CountriesController(CountryRepository repository)
+        public CountriesController(CountryRepository repository, ILoggerFactory loggerFactory)
         {
             _repository = repository;
+            _logger = loggerFactory.CreateLogger("Countries Controller");
         }
 
         // GET: api/Countries
@@ -25,7 +28,10 @@ namespace TechnicalTask.Controllers
         [HttpGet]
         public IEnumerable<Country> Get()
         {
+            _logger.LogInformation("Countries.Get called. Without arguments.");
             var countries = _repository.GetList();
+
+            _logger.LogTrace("Countries.Get ended. Return all Countries.");
             return countries;
         }
 
@@ -38,7 +44,10 @@ namespace TechnicalTask.Controllers
         [HttpGet("{id}")]
         public Country Get(int id)
         {
+            _logger.LogInformation($"Countries.Get called. Arguments: Id = {id}.");
             var country = _repository.GetItem(id);
+
+            _logger.LogTrace($"Countries.Get ended. Return Country with Id = {id}.");
             return country;
         }
 
@@ -52,16 +61,21 @@ namespace TechnicalTask.Controllers
         {
             if (country == null)
             {
+                _logger.LogError("Countries.Post. Argument \"country\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Countries.Post called. Arguments: country Name = {country.Name}.");
+
             var newCountry = country.ConvertToCountry(country);
 
             if (_repository.IsValid(newCountry))
             {
                 _repository.Create(newCountry);
+                _logger.LogTrace("Countries.Post ended. Country successfully created.");
             }
             else
             {
+                _logger.LogError("Countries.Post. Argument: country Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -77,16 +91,21 @@ namespace TechnicalTask.Controllers
         {
             if (country == null)
             {
+                _logger.LogError("Countries.Put. Argument \"country\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Countries.Put called. Arguments: Id = {id}, country Name = {country.Name}.");
+
             var updatableCountry = country.ConvertToCountry(country);
 
             if (_repository.IsValid(updatableCountry))
-            {
+            {                
                 _repository.Update(id, updatableCountry);
+                _logger.LogTrace("Countries.Put ended. Country successfully updated.");
             }
             else
             {
+                _logger.LogError("Countries.Put. Argument: country Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -99,7 +118,10 @@ namespace TechnicalTask.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _logger.LogInformation($"Countries.Delete called. Arguments: Id = {id}.");
+
             _repository.Delete(id);
+            _logger.LogTrace("Countries.Delete ended. Country successfully deleted.");
         }
     }
 }

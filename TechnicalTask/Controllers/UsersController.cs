@@ -12,12 +12,12 @@ namespace TechnicalTask.Controllers
     public class UsersController : Controller
     {
         private readonly UserRepository _repository;
-        //private readonly ILogger _logger;
+        private readonly ILogger _logger;
 
-        public UsersController(UserRepository repository)
+        public UsersController(UserRepository repository, ILoggerFactory loggerFactory)
         {
             _repository = repository;
-            //_logger = logger.CreateLogger("User Controller");
+            _logger = loggerFactory.CreateLogger("Users Controller");
         }
 
         // GET: api/Users
@@ -28,9 +28,11 @@ namespace TechnicalTask.Controllers
         [HttpGet]
         public IEnumerable<User> Get()
         {
+            _logger.LogInformation("Users.Get called. Without arguments.");
             var users = _repository.GetList();
-            //_logger.LogError("awgwagwagwagawg");
-            return users;
+
+            _logger.LogTrace("Users.Get ended. Return all Users.");
+            return users;            
         }
 
         // GET api/Users/5
@@ -42,7 +44,10 @@ namespace TechnicalTask.Controllers
         [HttpGet("{id}")]
         public User Get(int id)
         {
+            _logger.LogInformation($"Users.Get called. Arguments: Id = {id}.");
             var user = _repository.GetItem(id);
+
+            _logger.LogTrace($"Users.Get ended. Return User with Id = {id}.");
             return user;
         }
 
@@ -53,13 +58,16 @@ namespace TechnicalTask.Controllers
         /// <param name="user">Data to create a user.</param>
         [HttpPost]
         public void Post([FromBody]User user)
-        {
+        {          
             if (user == null)
             {
+                _logger.LogError("Users.Post. Argument \"user\" is null.");
                 throw new ArgumentNullException();
             }
-
+            _logger.LogInformation($"Users.Post called. Arguments: user Name = {user.Name}.");
+           
             _repository.Create(user);
+            _logger.LogTrace("Users.Post ended. User successfully created.");
         }
 
         // PUT api/Users/5
@@ -70,12 +78,16 @@ namespace TechnicalTask.Controllers
         /// <param name="user">Data to update the user.</param>
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]User user)
-        {
+        {          
             if (user == null)
             {
+                _logger.LogError("Users.Put. Argument \"user\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Users.Put called. Arguments: Id = {id}, user Name = {user.Name}.");
+            
             _repository.Update(id, user);
+            _logger.LogTrace("Users.Put ended. User successfully updated.");
         }
 
         // DELETE api/Users/5
@@ -86,7 +98,10 @@ namespace TechnicalTask.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _logger.LogInformation($"Users.Delete called. Arguments: Id = {id}.");
+
             _repository.Delete(id);
+            _logger.LogTrace("Users.Delete ended. User successfully deleted.");
         }
     }
 }

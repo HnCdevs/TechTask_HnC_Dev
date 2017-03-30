@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -11,10 +12,12 @@ namespace TechnicalTask.Controllers
     public class BusinessesController : Controller
     {
         private readonly BusinessRepository _repository;
+        private readonly ILogger _logger;
 
-        public BusinessesController(BusinessRepository repository)
+        public BusinessesController(BusinessRepository repository, ILoggerFactory loggerFactory)
         {
             _repository = repository;
+            _logger = loggerFactory.CreateLogger("Businesses Controller");
         }
 
         // GET: api/Businesses
@@ -25,7 +28,10 @@ namespace TechnicalTask.Controllers
         [HttpGet]
         public IEnumerable<Business> Get()
         {
+            _logger.LogInformation("Businesses.Get called. Without arguments.");
             var businesses = _repository.GetList();
+
+            _logger.LogTrace("Businesses.Get ended. Return all Businesses.");
             return businesses;
         }
 
@@ -38,7 +44,10 @@ namespace TechnicalTask.Controllers
         [HttpGet("{id}")]
         public Business Get(int id)
         {
+            _logger.LogInformation($"Businesses.Get called. Arguments: Id = {id}.");
             var business = _repository.GetItem(id);
+
+            _logger.LogTrace($"Businesses.Get ended. Return Business with Id = {id}.");
             return business;
         }
 
@@ -52,15 +61,19 @@ namespace TechnicalTask.Controllers
         {
             if (business == null)
             {
+                _logger.LogError("Businesses.Post. Argument \"business\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Businesses.Post called. Arguments: business Name = {business.Name}.");
 
             if (_repository.IsValid(business))
             {
                 _repository.Create(business);
+                _logger.LogTrace("Businesses.Post ended. Business successfully created.");
             }
             else
             {
+                _logger.LogError("Businesses.Post. Argument: business Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -76,15 +89,19 @@ namespace TechnicalTask.Controllers
         {
             if (business == null)
             {
+                _logger.LogError("Businesses.Put. Argument \"business\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Businesses.Put called. Arguments: Id = {id}, business Name = {business.Name}.");
 
             if (_repository.IsValid(business))
             {
                 _repository.Update(id, business);
+                _logger.LogTrace("Businesses.Put ended. Business successfully updated.");
             }
             else
             {
+                _logger.LogError("Businesses.Put. Argument: business Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -97,7 +114,10 @@ namespace TechnicalTask.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _logger.LogInformation($"Businesses.Delete called. Arguments: Id = {id}.");
+
             _repository.Delete(id);
+            _logger.LogTrace("Businesses.Delete ended. Business successfully deleted.");
         }
     }
 }

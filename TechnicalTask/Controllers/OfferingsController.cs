@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -11,10 +12,12 @@ namespace TechnicalTask.Controllers
     public class OfferingsController : Controller
     {
         private readonly OfferingRepository _repository;
+        private readonly ILogger _logger;
 
-        public OfferingsController(OfferingRepository repository)
+        public OfferingsController(OfferingRepository repository, ILoggerFactory loggerFactory)
         {
             _repository = repository;
+            _logger = loggerFactory.CreateLogger("Offerings Controller");
         }
 
         // GET: api/Offerings
@@ -25,7 +28,10 @@ namespace TechnicalTask.Controllers
         [HttpGet]
         public IEnumerable<Offering> Get()
         {
+            _logger.LogInformation("Offerings.Get called. Without arguments.");
             var offerings = _repository.GetList();
+
+            _logger.LogTrace("Offerings.Get ended. Return all Offerings.");
             return offerings;
         }
 
@@ -38,7 +44,10 @@ namespace TechnicalTask.Controllers
         [HttpGet("{id}")]
         public Offering Get(int id)
         {
+            _logger.LogInformation($"Offerings.Get called. Arguments: Id = {id}.");
             var offering = _repository.GetItem(id);
+
+            _logger.LogTrace($"Offerings.Get ended. Return Offering with Id = {id}.");
             return offering;
         }
 
@@ -52,15 +61,19 @@ namespace TechnicalTask.Controllers
         {
             if (offering == null)
             {
+                _logger.LogError("Offerings.Post. Argument \"offering\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Offerings.Post called. Arguments: offering Name = {offering.Name}.");
 
             if (_repository.IsValid(offering))
             {
                 _repository.Create(offering);
+                _logger.LogTrace("Offerings.Post ended. Offering successfully created.");
             }
             else
             {
+                _logger.LogError("Offerings.Post. Argument: offering Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -76,15 +89,19 @@ namespace TechnicalTask.Controllers
         {
             if (offering == null)
             {
+                _logger.LogError("Offerings.Put. Argument \"offering\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Offerings.Put called. Arguments: Id = {id}, offering Name = {offering.Name}.");
 
             if (_repository.IsValid(offering))
             {
                 _repository.Update(id, offering);
+                _logger.LogTrace("Offerings.Put ended. Offering successfully updated.");
             }
             else
             {
+                _logger.LogError("Offerings.Put. Argument: offering Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -97,7 +114,10 @@ namespace TechnicalTask.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _logger.LogInformation($"Offerings.Delete called. Arguments: Id = {id}.");
+
             _repository.Delete(id);
+            _logger.LogTrace("Offerings.Delete ended. Offering successfully deleted.");
         }
     }
 }

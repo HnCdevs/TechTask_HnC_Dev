@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ClearExtensions;
 using TechnicalTask.Controllers;
@@ -9,7 +10,7 @@ using TechnicalTask.Models;
 using TechnicalTask.Repository;
 using Xunit;
 
-namespace XUnitTests
+namespace XUnitTests.ControllerTests
 {
     public class OrganizationsControllerTests : IDisposable
     {
@@ -33,7 +34,8 @@ namespace XUnitTests
             _repository.Update(Arg.Any<int>(), Arg.Any<Organization>());
             _repository.Delete(Arg.Any<int>());
 
-            _controller = new OrganizationsController(_repository);
+            var mockLogger = Substitute.For<ILoggerFactory>();
+            _controller = new OrganizationsController(_repository, mockLogger);
         }
 
         [Fact]
@@ -59,16 +61,8 @@ namespace XUnitTests
         [Fact]
         public void CreateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Organization>()).Returns(true);
             _controller.Post(new Organization());
             _repository.Received(1).Create(Arg.Any<Organization>());
-        }
-
-        [Fact]
-        public void CreateInvalidTest()
-        {
-            _repository.IsValid(Arg.Any<Organization>()).Returns(false);
-            Assert.Throws<ArgumentException>(() => _controller.Post(new Organization()));
         }
 
         [Fact]
@@ -80,16 +74,8 @@ namespace XUnitTests
         [Fact]
         public void UpdateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Organization>()).Returns(true);
             _controller.Put(0, new Organization());
             _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<Organization>());
-        }
-
-        [Fact]
-        public void UpdateInvalidTest()
-        {
-            _repository.IsValid(Arg.Any<Organization>()).Returns(false);
-            Assert.Throws<ArgumentException>(() => _controller.Put(0, new Organization()));
         }
 
         [Fact]

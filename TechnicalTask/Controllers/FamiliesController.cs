@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -11,10 +12,12 @@ namespace TechnicalTask.Controllers
     public class FamiliesController : Controller
     {
         private readonly FamilyRepository _repository;
+        private readonly ILogger _logger;
 
-        public FamiliesController(FamilyRepository repository)
+        public FamiliesController(FamilyRepository repository, ILoggerFactory loggerFactory)
         {
             _repository = repository;
+            _logger = loggerFactory.CreateLogger("Families Controller");
         }
 
         // GET: api/Families
@@ -25,7 +28,10 @@ namespace TechnicalTask.Controllers
         [HttpGet]
         public IEnumerable<Family> Get()
         {
+            _logger.LogInformation("Families.Get called. Without arguments.");
             var families = _repository.GetList();
+
+            _logger.LogTrace("Families.Get ended. Return all Families.");
             return families;
         }
 
@@ -38,7 +44,10 @@ namespace TechnicalTask.Controllers
         [HttpGet("{id}")]
         public Family Get(int id)
         {
+            _logger.LogInformation($"Families.Get called. Arguments: Id = {id}.");
             var family = _repository.GetItem(id);
+
+            _logger.LogTrace($"Families.Get ended. Return Family with Id = {id}.");
             return family;
         }
 
@@ -52,15 +61,19 @@ namespace TechnicalTask.Controllers
         {
             if (family == null)
             {
+                _logger.LogError("Families.Post. Argument \"family\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Families.Post called. Arguments: family Name = {family.Name}.");
 
             if (_repository.IsValid(family))
             {
                 _repository.Create(family);
+                _logger.LogTrace("Families.Post ended. Family successfully created.");
             }
             else
             {
+                _logger.LogError("Families.Post. Argument: family Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -76,15 +89,19 @@ namespace TechnicalTask.Controllers
         {
             if (family == null)
             {
+                _logger.LogError("Families.Put. Argument \"family\" is null.");
                 throw new ArgumentNullException();
             }
+            _logger.LogInformation($"Families.Put called. Arguments: Id = {id}, family Name = {family.Name}.");
 
             if (_repository.IsValid(family))
             {
                 _repository.Update(id, family);
+                _logger.LogTrace("Families.Put ended. Family successfully updated.");
             }
             else
             {
+                _logger.LogError("Families.Put. Argument: family Name is invalid.");
                 throw new ArgumentException();
             }
         }
@@ -97,7 +114,10 @@ namespace TechnicalTask.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _logger.LogInformation($"Families.Delete called. Arguments: Id = {id}.");
+
             _repository.Delete(id);
+            _logger.LogTrace("Families.Delete ended. Family successfully deleted.");
         }
     }
 }
