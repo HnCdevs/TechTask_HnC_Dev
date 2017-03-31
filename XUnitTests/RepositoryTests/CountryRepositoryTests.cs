@@ -97,9 +97,7 @@ namespace XUnitTests.RepositoryTests
         [Fact]
         public void CreateTest()
         {
-            var country = new Country { Id = 1, OrganizationCountries = _organizationCountriesSet.ToList() };
-            //var expected = _organizationsSet.ToArray()[0];
-            //_context.Organizations.Find(Arg.Any<int>()).Returns(expected);
+            var country = new Country { Id = 1, OrganizationCountries = { new OrganizationCountry { OrganizationId = 1 }}};
 
             _repository.Create(country);
             _context.Received(2).SaveChanges();

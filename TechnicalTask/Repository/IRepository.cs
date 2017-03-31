@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Metadata;
-using TechnicalTask.Models;
 
 namespace TechnicalTask.Repository
 {

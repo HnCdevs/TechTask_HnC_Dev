@@ -22,8 +22,8 @@ namespace XUnitTests.RepositoryTests
         {
             var offeringsList = new List<Offering>
             {
-                new Offering { Id = 1, Name = "test 1", FamilyId = 2,},
-                new Offering { Id = 2, Name = "test 2", FamilyId = 1, Departments = new List<Department>()}
+                new Offering { Id = 1, Name = "test 1", FamilyId = 2 },
+                new Offering { Id = 2, Name = "test 2", FamilyId = 1 }
             }.AsQueryable();
 
             var familiesList = new List<Family>

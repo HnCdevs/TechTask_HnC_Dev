@@ -58,7 +58,10 @@ namespace TechnicalTask.Controllers
         /// <param name="user">Data to create a user.</param>
         [HttpPost]
         public void Post([FromBody]User user)
-        {          
+        {           
+            //byte[] faw;
+            //if (!HttpContext.Session.TryGetValue("accessToken", out faw)) throw new Exception("Access denied");
+
             if (user == null)
             {
                 _logger.LogError("Users.Post. Argument \"user\" is null.");

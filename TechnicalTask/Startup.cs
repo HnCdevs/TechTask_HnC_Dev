@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,9 +45,18 @@ namespace TechnicalTask
             });
 
             services.AddMvc();
+            services.AddDistributedMemoryCache();
+
+            //services.AddSession(options =>
+            //{
+            //    // Set a short timeout for easy testing.
+            //    options.IdleTimeout = TimeSpan.FromSeconds(10);
+            //    options.CookieHttpOnly = true;
+            //});
 
             services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(_container));
             services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(_container));
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             services.AddSwaggerGen(c =>
             {
@@ -77,6 +87,12 @@ namespace TechnicalTask
             loggerFactory.AddDebug();
             loggerFactory.AddFile("Logs/testlog.txt");
 
+            //app.UseSession();
+            //app.UseGoogleAuthentication(new GoogleOptions
+            //{
+            //    ClientId = "id",
+            //    ClientSecret = "secret"
+            //});
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

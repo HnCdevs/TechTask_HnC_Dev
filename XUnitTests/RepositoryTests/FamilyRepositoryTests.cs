@@ -20,7 +20,7 @@ namespace XUnitTests.RepositoryTests
 
         public FamilyRepositoryTests()
         {
-            var familysList = new List<Family>
+            var familiesList = new List<Family>
             {
                 new Family { Id = 1, Name = "test 1", BusinessId = 2 },
                 new Family { Id = 2, Name = "test 2", BusinessId = 1 }
@@ -33,10 +33,10 @@ namespace XUnitTests.RepositoryTests
             }.AsQueryable();
 
             _familiesSet = Substitute.For<DbSet<Family>, IQueryable<Family>>();
-            ((IQueryable<Family>)_familiesSet).Provider.Returns(familysList.Provider);
-            ((IQueryable<Family>)_familiesSet).Expression.Returns(familysList.Expression);
-            ((IQueryable<Family>)_familiesSet).ElementType.Returns(familysList.ElementType);
-            ((IQueryable<Family>)_familiesSet).GetEnumerator().Returns(familysList.GetEnumerator());
+            ((IQueryable<Family>)_familiesSet).Provider.Returns(familiesList.Provider);
+            ((IQueryable<Family>)_familiesSet).Expression.Returns(familiesList.Expression);
+            ((IQueryable<Family>)_familiesSet).ElementType.Returns(familiesList.ElementType);
+            ((IQueryable<Family>)_familiesSet).GetEnumerator().Returns(familiesList.GetEnumerator());
 
             _businessesSet = Substitute.For<DbSet<Business>, IQueryable<Business>>();
             ((IQueryable<Business>)_businessesSet).Provider.Returns(businessesList.Provider);

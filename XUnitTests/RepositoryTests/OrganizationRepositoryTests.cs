@@ -13,7 +13,7 @@ namespace XUnitTests.RepositoryTests
 {
     public class OrganizationRepositoryTests : IDisposable
     {
-        private readonly DbSet<Organization> _organizationsSet;
+        //private readonly DbSet<Organization> _organizationsSet;
         private readonly TtContext _context;
         private readonly OrganizationRepository _repository;
 
@@ -25,14 +25,14 @@ namespace XUnitTests.RepositoryTests
                 new Organization { Id = 2, Name = "test 2" }
             }.AsQueryable();
 
-            _organizationsSet = Substitute.For<DbSet<Organization>, IQueryable<Organization>>();
-            ((IQueryable<Organization>)_organizationsSet).Provider.Returns(organizationsList.Provider);
-            ((IQueryable<Organization>)_organizationsSet).Expression.Returns(organizationsList.Expression);
-            ((IQueryable<Organization>)_organizationsSet).ElementType.Returns(organizationsList.ElementType);
-            ((IQueryable<Organization>)_organizationsSet).GetEnumerator().Returns(organizationsList.GetEnumerator());
+            var organizationsSet = Substitute.For<DbSet<Organization>, IQueryable<Organization>>();
+            ((IQueryable<Organization>)organizationsSet).Provider.Returns(organizationsList.Provider);
+            ((IQueryable<Organization>)organizationsSet).Expression.Returns(organizationsList.Expression);
+            ((IQueryable<Organization>)organizationsSet).ElementType.Returns(organizationsList.ElementType);
+            ((IQueryable<Organization>)organizationsSet).GetEnumerator().Returns(organizationsList.GetEnumerator());          
 
             _context = Substitute.For<TtContext>();
-            _context.Organizations.Returns(_organizationsSet);
+            _context.Organizations.Returns(organizationsSet);
 
             _repository = new OrganizationRepository(_context);
         }

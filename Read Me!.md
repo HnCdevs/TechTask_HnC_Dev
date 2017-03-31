@@ -161,7 +161,7 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 {
   "name": "string",
   "code": "string",
-  "organizationType": 1,
+  "organizationType": 1 (You can use numbers from 1 to 6),
   "owner": "string",
   "organizationCountries": [
     {
