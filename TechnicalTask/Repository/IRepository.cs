@@ -7,9 +7,7 @@ namespace TechnicalTask.Repository
         IEnumerable<T> GetList();
         T GetItem(int id);
         void Create(T item);
-        void Update(int id, T item);
-        void Delete(int id);
-
-        bool IsValid(T item);
+        void Update(T entry, T item);
+        void Delete(T item);
     }
 }

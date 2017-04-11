@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,12 +11,12 @@ namespace TechnicalTask.Controllers
     [Route("api/Families")]
     public class FamiliesController : Controller
     {
-        private readonly FamilyRepository _repository;
+        private readonly IService<Family> _service;
         private readonly ILogger _logger;
 
-        public FamiliesController(FamilyRepository repository, ILoggerFactory loggerFactory)
+        public FamiliesController(IService<Family> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Families Controller");
         }
 
@@ -29,7 +29,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<Family> Get()
         {
             _logger.LogInformation("Families.Get called. Without arguments.");
-            var families = _repository.GetList();
+            var families = _service.GetList();
 
             _logger.LogTrace("Families.Get ended. Return all Families.");
             return families;
@@ -45,7 +45,7 @@ namespace TechnicalTask.Controllers
         public Family Get(int id)
         {
             _logger.LogInformation($"Families.Get called. Arguments: Id = {id}.");
-            var family = _repository.GetItem(id);
+            var family = _service.GetItem(id);
 
             _logger.LogTrace($"Families.Get ended. Return Family with Id = {id}.");
             return family;
@@ -66,9 +66,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Families.Post called. Arguments: family Name = {family.Name}.");
 
-            if (_repository.IsValid(family))
+            if (_service.IsValid(family))
             {
-                _repository.Create(family);
+                _service.Create(family);
                 _logger.LogTrace("Families.Post ended. Family successfully created.");
             }
             else
@@ -94,9 +94,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Families.Put called. Arguments: Id = {id}, family Name = {family.Name}.");
 
-            if (_repository.IsValid(family))
+            if (_service.IsValid(family))
             {
-                _repository.Update(id, family);
+                _service.Update(id, family);
                 _logger.LogTrace("Families.Put ended. Family successfully updated.");
             }
             else
@@ -116,7 +116,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Families.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Families.Delete ended. Family successfully deleted.");
         }
     }

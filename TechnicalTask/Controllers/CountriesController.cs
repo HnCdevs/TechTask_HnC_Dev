@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,12 +11,12 @@ namespace TechnicalTask.Controllers
     [Route("api/Countries")]
     public class CountriesController : Controller
     {
-        private readonly CountryRepository _repository;
+        private readonly IService<Country> _service;
         private readonly ILogger _logger;
 
-        public CountriesController(CountryRepository repository, ILoggerFactory loggerFactory)
+        public CountriesController(IService<Country> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Countries Controller");
         }
 
@@ -29,7 +29,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<Country> Get()
         {
             _logger.LogInformation("Countries.Get called. Without arguments.");
-            var countries = _repository.GetList();
+            var countries = _service.GetList();
 
             _logger.LogTrace("Countries.Get ended. Return all Countries.");
             return countries;
@@ -45,7 +45,7 @@ namespace TechnicalTask.Controllers
         public Country Get(int id)
         {
             _logger.LogInformation($"Countries.Get called. Arguments: Id = {id}.");
-            var country = _repository.GetItem(id);
+            var country = _service.GetItem(id);
 
             _logger.LogTrace($"Countries.Get ended. Return Country with Id = {id}.");
             return country;
@@ -68,9 +68,9 @@ namespace TechnicalTask.Controllers
 
             var newCountry = country.ConvertToCountry(country);
 
-            if (_repository.IsValid(newCountry))
+            if (_service.IsValid(newCountry))
             {
-                _repository.Create(newCountry);
+                _service.Create(newCountry);
                 _logger.LogTrace("Countries.Post ended. Country successfully created.");
             }
             else
@@ -97,10 +97,11 @@ namespace TechnicalTask.Controllers
             _logger.LogInformation($"Countries.Put called. Arguments: Id = {id}, country Name = {country.Name}.");
 
             var updatableCountry = country.ConvertToCountry(country);
+            updatableCountry.Id = id;
 
-            if (_repository.IsValid(updatableCountry))
+            if (_service.IsValid(updatableCountry))
             {                
-                _repository.Update(id, updatableCountry);
+                _service.Update(id, updatableCountry);
                 _logger.LogTrace("Countries.Put ended. Country successfully updated.");
             }
             else
@@ -120,7 +121,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Countries.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Countries.Delete ended. Country successfully deleted.");
         }
     }

@@ -8,13 +8,14 @@ using TechnicalTask.Controllers;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
+using TechnicalTask.Services;
 using Xunit;
 
 namespace XUnitTests.ControllerTests
 {
     public class CountriesControllerTests : IDisposable
     {
-        private readonly CountryRepository _repository;
+        private readonly CountryService _service;
         private readonly CountriesController _controller;
 
         public CountriesControllerTests()
@@ -27,15 +28,18 @@ namespace XUnitTests.ControllerTests
             }.AsQueryable();
 
             var mockContext = Substitute.For<TtContext>();
-            _repository = Substitute.For<CountryRepository>(mockContext);
-            _repository.GetList().Returns(list);
-            _repository.GetItem(Arg.Any<int>()).Returns(new Country { Id = 1, Name = "test 1" });
-            _repository.Create(Arg.Any<Country>());
-            _repository.Update(Arg.Any<int>(), Arg.Any<Country>());
-            _repository.Delete(Arg.Any<int>());
+            var countryRepository = Substitute.For<Repository<Country>>(mockContext);
+            var organizationCountryRepository = Substitute.For<Repository<OrganizationCountry>>(mockContext);
+            var organizationRepository = Substitute.For<Repository<Organization>>(mockContext);
+            _service = Substitute.For<CountryService>(countryRepository, organizationCountryRepository, organizationRepository);
+            _service.GetList().Returns(list);
+            _service.GetItem(Arg.Any<int>()).Returns(new Country { Id = 1, Name = "test 1" });
+            _service.Create(Arg.Any<Country>());
+            _service.Update(Arg.Any<int>(), Arg.Any<Country>());
+            _service.Delete(Arg.Any<int>());
 
             var mockLogger = Substitute.For<ILoggerFactory>();
-            _controller = new CountriesController(_repository, mockLogger);
+            _controller = new CountriesController(_service, mockLogger);
         }
 
         [Fact]
@@ -61,15 +65,15 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void CreateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Country>()).Returns(true);
+            _service.IsValid(Arg.Any<Country>()).Returns(true);
             _controller.Post(new CountryInput());
-            _repository.Received(1).Create(Arg.Any<Country>());
+            _service.Received(1).Create(Arg.Any<Country>());
         }
 
         [Fact]
         public void CreateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Country>()).Returns(false);
+            _service.IsValid(Arg.Any<Country>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Post(new CountryInput()));
         }
 
@@ -82,15 +86,15 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void UpdateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Country>()).Returns(true);
+            _service.IsValid(Arg.Any<Country>()).Returns(true);
             _controller.Put(0, new CountryInput());
-            _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<Country>());
+            _service.Received(1).Update(Arg.Any<int>(), Arg.Any<Country>());
         }
 
         [Fact]
         public void UpdateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Country>()).Returns(false);
+            _service.IsValid(Arg.Any<Country>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Put(0, new CountryInput()));
         }
 
@@ -98,12 +102,12 @@ namespace XUnitTests.ControllerTests
         public void DeleteTest()
         {
             _controller.Delete(0);
-            _repository.Received(1).Delete(Arg.Any<int>());
+            _service.Received(1).Delete(Arg.Any<int>());
         }
 
         public void Dispose()
         {
-            _repository.ClearSubstitute();
+            _service.ClearSubstitute();
         }
     }
 }

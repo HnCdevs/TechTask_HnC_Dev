@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,12 +11,12 @@ namespace TechnicalTask.Controllers
     [Route("api/Businesses")]
     public class BusinessesController : Controller
     {
-        private readonly BusinessRepository _repository;
+        private readonly IService<Business> _service;
         private readonly ILogger _logger;
 
-        public BusinessesController(BusinessRepository repository, ILoggerFactory loggerFactory)
+        public BusinessesController(IService<Business> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Businesses Controller");
         }
 
@@ -29,7 +29,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<Business> Get()
         {
             _logger.LogInformation("Businesses.Get called. Without arguments.");
-            var businesses = _repository.GetList();
+            var businesses = _service.GetList();
 
             _logger.LogTrace("Businesses.Get ended. Return all Businesses.");
             return businesses;
@@ -45,7 +45,7 @@ namespace TechnicalTask.Controllers
         public Business Get(int id)
         {
             _logger.LogInformation($"Businesses.Get called. Arguments: Id = {id}.");
-            var business = _repository.GetItem(id);
+            var business = _service.GetItem(id);
 
             _logger.LogTrace($"Businesses.Get ended. Return Business with Id = {id}.");
             return business;
@@ -66,9 +66,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Businesses.Post called. Arguments: business Name = {business.Name}.");
 
-            if (_repository.IsValid(business))
+            if (_service.IsValid(business))
             {
-                _repository.Create(business);
+                _service.Create(business);
                 _logger.LogTrace("Businesses.Post ended. Business successfully created.");
             }
             else
@@ -94,9 +94,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Businesses.Put called. Arguments: Id = {id}, business Name = {business.Name}.");
 
-            if (_repository.IsValid(business))
+            if (_service.IsValid(business))
             {
-                _repository.Update(id, business);
+                _service.Update(id, business);
                 _logger.LogTrace("Businesses.Put ended. Business successfully updated.");
             }
             else
@@ -116,7 +116,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Businesses.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Businesses.Delete ended. Business successfully deleted.");
         }
     }

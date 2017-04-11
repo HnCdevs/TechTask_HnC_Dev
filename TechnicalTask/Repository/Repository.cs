@@ -1,53 +1,51 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TechnicalTask.Data;
 
 namespace TechnicalTask.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected readonly TtContext Context;
+        private readonly TtContext _context;
+        private DbSet<T> _entities;
+
+        private DbSet<T> Entities => _entities ?? (_entities = _context.Set<T>());
 
         public Repository(TtContext context)
         {
-            Context = context;
+            _context = context;
         }
 
         public virtual IEnumerable<T> GetList()
         {
-            var list = Context.Set<T>().ToList();
-            return list;
+            return Entities;
         }
 
         public T GetItem(int id)
         {
-            var item = Context.Find<T>(id);
-            return item;
+            return Entities.Find(id);
         }
 
         public virtual void Create(T item)
         {
-            Context.SetAdded(item);
-            Context.SaveChanges();
+            //Entities.Add(item);
+            _context.SetAdded(item);
+            _context.SaveChanges();
         }
 
-        public virtual void Update(int id, T item)
+        public virtual void Update(T entry, T item)
         {
-            var entry = GetItem(id);
-            Context.SetValues(entry, item);
-            Context.SaveChanges();
+            //var entry = GetItem(id);
+            _context.SetValues(entry, item);
+            _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(T item)
         {
-            var item = GetItem(id);
-            Context.SetDeleted(item);
-            Context.SaveChanges();
-        }
-
-        public virtual bool IsValid(T item)
-        {
-            return true;
+            //var item = GetItem(id);     
+            //Entities.Remove(item);
+            _context.SetDeleted(item);
+            _context.SaveChanges();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Newtonsoft.Json;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
@@ -16,6 +19,7 @@ using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Integration.AspNetCore;
 using Swashbuckle.AspNetCore.Swagger;
+using TechnicalTask.Services;
 
 namespace TechnicalTask
 {   
@@ -44,7 +48,14 @@ namespace TechnicalTask
                 options.UseSqlServer(Configuration.GetConnectionString("DbConnection"));
             });
 
+            //services.AddIdentity<User, IdentityRole>()
+            //    .AddEntityFrameworkStores<TtContext>()
+            //    .AddDefaultTokenProviders();
+
             services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             services.AddDistributedMemoryCache();
 
             //services.AddSession(options =>
@@ -87,12 +98,13 @@ namespace TechnicalTask
             loggerFactory.AddDebug();
             loggerFactory.AddFile("Logs/testlog.txt");
 
-            //app.UseSession();
-            //app.UseGoogleAuthentication(new GoogleOptions
+            //app.UseIdentity();
+            //app.UseGoogleAuthentication(new GoogleOptions()
             //{
-            //    ClientId = "id",
-            //    ClientSecret = "secret"
+            //    ClientId = Configuration["Authentication:Google:ClientId"],
+            //    ClientSecret = Configuration["Authentication:Google:ClientSecret"]
             //});
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -117,12 +129,21 @@ namespace TechnicalTask
 
             // Add application services. For instance:
             _container.Register<IRepository<User>, Repository<User>>(Lifestyle.Scoped);
+            _container.Register<IRepository<OrganizationCountry>, Repository<OrganizationCountry>>(Lifestyle.Scoped);
             _container.Register<IRepository<Country>, Repository<Country>>(Lifestyle.Scoped);
             _container.Register<IRepository<Organization>, Repository<Organization>>(Lifestyle.Scoped);
             _container.Register<IRepository<Business>, Repository<Business>>(Lifestyle.Scoped);
             _container.Register<IRepository<Family>, Repository<Family>>(Lifestyle.Scoped);
             _container.Register<IRepository<Offering>, Repository<Offering>>(Lifestyle.Scoped);
             _container.Register<IRepository<Department>, Repository<Department>>(Lifestyle.Scoped);
+
+            _container.Register<IService<User>, UserService>(Lifestyle.Scoped);
+            _container.Register<IService<Country>, CountryService>(Lifestyle.Scoped);
+            _container.Register<IService<Organization>, OrganizationService>(Lifestyle.Scoped);
+            _container.Register<IService<Business>, BusinessService>(Lifestyle.Scoped);
+            _container.Register<IService<Family>, FamilyService>(Lifestyle.Scoped);
+            _container.Register<IService<Offering>, OfferingService>(Lifestyle.Scoped);
+            _container.Register<IService<Department>, DepartmentService>(Lifestyle.Scoped);
 
             // Cross-wire ASP.NET services (if any). For instance:
             _container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());

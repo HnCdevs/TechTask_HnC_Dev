@@ -8,13 +8,14 @@ using TechnicalTask.Controllers;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
+using TechnicalTask.Services;
 using Xunit;
 
 namespace XUnitTests.ControllerTests
 {
     public class UsersControllerTests : IDisposable
     {
-        private readonly UserRepository _repository;
+        private readonly UserService _service;
         private readonly UsersController _controller;
 
         public UsersControllerTests()
@@ -27,15 +28,16 @@ namespace XUnitTests.ControllerTests
             }.AsQueryable();
 
             var mockContext = Substitute.For<TtContext>();
-            _repository = Substitute.For<UserRepository>(mockContext);
-            _repository.GetList().Returns(list);
-            _repository.GetItem(Arg.Any<int>()).Returns(new User { Id = 1, Name = "test 1" });
-            _repository.Create(Arg.Any<User>());
-            _repository.Update(Arg.Any<int>(), Arg.Any<User>());
-            _repository.Delete(Arg.Any<int>());
+            var userRepository = Substitute.For<Repository<User>>(mockContext);
+            _service = Substitute.For<UserService>(userRepository);
+            _service.GetList().Returns(list);
+            _service.GetItem(Arg.Any<int>()).Returns(new User { Id = 1, Name = "test 1" });
+            _service.Create(Arg.Any<User>());
+            _service.Update(Arg.Any<int>(), Arg.Any<User>());
+            _service.Delete(Arg.Any<int>());
 
             var mockLogger = Substitute.For<ILoggerFactory>();
-            _controller = new UsersController(_repository, mockLogger);
+            _controller = new UsersController(_service, mockLogger);
         }
 
         [Fact]
@@ -61,9 +63,9 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void CreateGoodTest()
         {
-            _repository.IsValid(Arg.Any<User>()).Returns(true);
+            _service.IsValid(Arg.Any<User>()).Returns(true);
             _controller.Post(new User());
-            _repository.Received(1).Create(Arg.Any<User>());
+            _service.Received(1).Create(Arg.Any<User>());
         }
 
         [Fact]
@@ -75,21 +77,21 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void UpdateGoodTest()
         {
-            _repository.IsValid(Arg.Any<User>()).Returns(true);
+            _service.IsValid(Arg.Any<User>()).Returns(true);
             _controller.Put(0, new User());
-            _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<User>());
+            _service.Received(1).Update(Arg.Any<int>(), Arg.Any<User>());
         }
 
         [Fact]
         public void DeleteTest()
         {
             _controller.Delete(0);
-            _repository.Received(1).Delete(Arg.Any<int>());
+            _service.Received(1).Delete(Arg.Any<int>());
         }
 
         public void Dispose()
         {
-            _repository.ClearSubstitute();
+            _service.ClearSubstitute();
         }
     }
 }

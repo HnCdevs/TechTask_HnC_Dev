@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,12 +11,12 @@ namespace TechnicalTask.Controllers
     [Route("api/Departments")]
     public class DepartmentsController : Controller
     {
-        private readonly DepartmentRepository _repository;
+        private readonly IService<Department> _service;
         private readonly ILogger _logger;
 
-        public DepartmentsController(DepartmentRepository repository, ILoggerFactory loggerFactory)
+        public DepartmentsController(IService<Department> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Departments Controller");
         }
 
@@ -29,7 +29,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<Department> Get()
         {
             _logger.LogInformation("Departments.Get called. Without arguments.");
-            var departments = _repository.GetList();
+            var departments = _service.GetList();
 
             _logger.LogTrace("Departments.Get ended. Return all Departments.");
             return departments;
@@ -45,7 +45,7 @@ namespace TechnicalTask.Controllers
         public Department Get(int id)
         {
             _logger.LogInformation($"Departments.Get called. Arguments: Id = {id}.");
-            var department = _repository.GetItem(id);
+            var department = _service.GetItem(id);
 
             _logger.LogTrace($"Departments.Get ended. Return Department with Id = {id}.");
             return department;
@@ -66,9 +66,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Departments.Post called. Arguments: department Name = {department.Name}.");
 
-            if (_repository.IsValid(department))
+            if (_service.IsValid(department))
             {
-                _repository.Create(department);
+                _service.Create(department);
                 _logger.LogTrace("Departments.Post ended. Department successfully created.");
             }
             else
@@ -94,9 +94,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Departments.Put called. Arguments: Id = {id}, department Name = {department.Name}.");
 
-            if (_repository.IsValid(department))
+            if (_service.IsValid(department))
             {
-                _repository.Update(id, department);
+                _service.Update(id, department);
                 _logger.LogTrace("Departments.Put ended. Department successfully updated.");
             }
             else
@@ -116,7 +116,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Departments.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Departments.Delete ended. Department successfully deleted.");
         }
     }

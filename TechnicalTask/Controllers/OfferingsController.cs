@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,12 +11,12 @@ namespace TechnicalTask.Controllers
     [Route("api/Offerings")]
     public class OfferingsController : Controller
     {
-        private readonly OfferingRepository _repository;
+        private readonly IService<Offering> _service;
         private readonly ILogger _logger;
 
-        public OfferingsController(OfferingRepository repository, ILoggerFactory loggerFactory)
+        public OfferingsController(IService<Offering> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Offerings Controller");
         }
 
@@ -29,7 +29,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<Offering> Get()
         {
             _logger.LogInformation("Offerings.Get called. Without arguments.");
-            var offerings = _repository.GetList();
+            var offerings = _service.GetList();
 
             _logger.LogTrace("Offerings.Get ended. Return all Offerings.");
             return offerings;
@@ -45,7 +45,7 @@ namespace TechnicalTask.Controllers
         public Offering Get(int id)
         {
             _logger.LogInformation($"Offerings.Get called. Arguments: Id = {id}.");
-            var offering = _repository.GetItem(id);
+            var offering = _service.GetItem(id);
 
             _logger.LogTrace($"Offerings.Get ended. Return Offering with Id = {id}.");
             return offering;
@@ -66,9 +66,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Offerings.Post called. Arguments: offering Name = {offering.Name}.");
 
-            if (_repository.IsValid(offering))
+            if (_service.IsValid(offering))
             {
-                _repository.Create(offering);
+                _service.Create(offering);
                 _logger.LogTrace("Offerings.Post ended. Offering successfully created.");
             }
             else
@@ -94,9 +94,9 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Offerings.Put called. Arguments: Id = {id}, offering Name = {offering.Name}.");
 
-            if (_repository.IsValid(offering))
+            if (_service.IsValid(offering))
             {
-                _repository.Update(id, offering);
+                _service.Update(id, offering);
                 _logger.LogTrace("Offerings.Put ended. Offering successfully updated.");
             }
             else
@@ -116,7 +116,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Offerings.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Offerings.Delete ended. Offering successfully deleted.");
         }
     }

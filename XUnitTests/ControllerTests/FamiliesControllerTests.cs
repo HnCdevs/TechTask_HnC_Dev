@@ -8,13 +8,14 @@ using TechnicalTask.Controllers;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
+using TechnicalTask.Services;
 using Xunit;
 
 namespace XUnitTests.ControllerTests
 {
     public class FamiliesControllerTests : IDisposable
     {
-        private readonly FamilyRepository _repository;
+        private readonly FamilyService _service;
         private readonly FamiliesController _controller;
 
         public FamiliesControllerTests()
@@ -27,15 +28,17 @@ namespace XUnitTests.ControllerTests
             }.AsQueryable();
 
             var mockContext = Substitute.For<TtContext>();
-            _repository = Substitute.For<FamilyRepository>(mockContext);
-            _repository.GetList().Returns(list);
-            _repository.GetItem(Arg.Any<int>()).Returns(new Family { Id = 1, Name = "test 1", BusinessId = 1 });
-            _repository.Create(Arg.Any<Family>());
-            _repository.Update(Arg.Any<int>(), Arg.Any<Family>());
-            _repository.Delete(Arg.Any<int>());
+            var familyRepository = Substitute.For<Repository<Family>>(mockContext);
+            var businessRepository = Substitute.For<Repository<Business>>(mockContext);
+            _service = Substitute.For<FamilyService>(familyRepository, businessRepository);
+            _service.GetList().Returns(list);
+            _service.GetItem(Arg.Any<int>()).Returns(new Family { Id = 1, Name = "test 1", BusinessId = 1 });
+            _service.Create(Arg.Any<Family>());
+            _service.Update(Arg.Any<int>(), Arg.Any<Family>());
+            _service.Delete(Arg.Any<int>());
 
             var mockLogger = Substitute.For<ILoggerFactory>();
-            _controller = new FamiliesController(_repository, mockLogger);
+            _controller = new FamiliesController(_service, mockLogger);
         }
 
         [Fact]
@@ -61,15 +64,15 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void CreateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Family>()).Returns(true);
+            _service.IsValid(Arg.Any<Family>()).Returns(true);
             _controller.Post(new Family());
-            _repository.Received(1).Create(Arg.Any<Family>());
+            _service.Received(1).Create(Arg.Any<Family>());
         }
 
         [Fact]
         public void CreateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Family>()).Returns(false);
+            _service.IsValid(Arg.Any<Family>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Post(new Family()));
         }
 
@@ -82,15 +85,15 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void UpdateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Family>()).Returns(true);
+            _service.IsValid(Arg.Any<Family>()).Returns(true);
             _controller.Put(0, new Family());
-            _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<Family>());
+            _service.Received(1).Update(Arg.Any<int>(), Arg.Any<Family>());
         }
 
         [Fact]
         public void UpdateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Family>()).Returns(false);
+            _service.IsValid(Arg.Any<Family>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Put(0, new Family()));
         }
 
@@ -98,12 +101,12 @@ namespace XUnitTests.ControllerTests
         public void DeleteTest()
         {
             _controller.Delete(0);
-            _repository.Received(1).Delete(Arg.Any<int>());
+            _service.Received(1).Delete(Arg.Any<int>());
         }
 
         public void Dispose()
         {
-            _repository.ClearSubstitute();
+            _service.ClearSubstitute();
         }
     }
 }

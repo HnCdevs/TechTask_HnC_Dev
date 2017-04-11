@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,12 +11,12 @@ namespace TechnicalTask.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
-        private readonly UserRepository _repository;
+        private readonly IService<User> _service;
         private readonly ILogger _logger;
 
-        public UsersController(UserRepository repository, ILoggerFactory loggerFactory)
+        public UsersController(IService<User> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Users Controller");
         }
 
@@ -29,7 +29,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<User> Get()
         {
             _logger.LogInformation("Users.Get called. Without arguments.");
-            var users = _repository.GetList();
+            var users = _service.GetList();
 
             _logger.LogTrace("Users.Get ended. Return all Users.");
             return users;            
@@ -45,7 +45,7 @@ namespace TechnicalTask.Controllers
         public User Get(int id)
         {
             _logger.LogInformation($"Users.Get called. Arguments: Id = {id}.");
-            var user = _repository.GetItem(id);
+            var user = _service.GetItem(id);
 
             _logger.LogTrace($"Users.Get ended. Return User with Id = {id}.");
             return user;
@@ -69,7 +69,7 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Users.Post called. Arguments: user Name = {user.Name}.");
            
-            _repository.Create(user);
+            _service.Create(user);
             _logger.LogTrace("Users.Post ended. User successfully created.");
         }
 
@@ -89,7 +89,7 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Users.Put called. Arguments: Id = {id}, user Name = {user.Name}.");
             
-            _repository.Update(id, user);
+            _service.Update(id, user);
             _logger.LogTrace("Users.Put ended. User successfully updated.");
         }
 
@@ -103,7 +103,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Users.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Users.Delete ended. User successfully deleted.");
         }
     }

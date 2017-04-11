@@ -8,13 +8,14 @@ using TechnicalTask.Controllers;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
+using TechnicalTask.Services;
 using Xunit;
 
 namespace XUnitTests.ControllerTests
 {
     public class OrganizationsControllerTests : IDisposable
     {
-        private readonly OrganizationRepository _repository;
+        private readonly OrganizationService _service;
         private readonly OrganizationsController _controller;
 
         public OrganizationsControllerTests()
@@ -27,15 +28,16 @@ namespace XUnitTests.ControllerTests
             }.AsQueryable();
 
             var mockContext = Substitute.For<TtContext>();
-            _repository = Substitute.For<OrganizationRepository>(mockContext);
-            _repository.GetList().Returns(list);
-            _repository.GetItem(Arg.Any<int>()).Returns(new Organization { Id = 1, Name = "test 1" });
-            _repository.Create(Arg.Any<Organization>());
-            _repository.Update(Arg.Any<int>(), Arg.Any<Organization>());
-            _repository.Delete(Arg.Any<int>());
+            var organizationRepository = Substitute.For<Repository<Organization>>(mockContext);
+            _service = Substitute.For<OrganizationService>(organizationRepository);
+            _service.GetList().Returns(list);
+            _service.GetItem(Arg.Any<int>()).Returns(new Organization { Id = 1, Name = "test 1" });
+            _service.Create(Arg.Any<Organization>());
+            _service.Update(Arg.Any<int>(), Arg.Any<Organization>());
+            _service.Delete(Arg.Any<int>());
 
             var mockLogger = Substitute.For<ILoggerFactory>();
-            _controller = new OrganizationsController(_repository, mockLogger);
+            _controller = new OrganizationsController(_service, mockLogger);
         }
 
         [Fact]
@@ -62,7 +64,7 @@ namespace XUnitTests.ControllerTests
         public void CreateGoodTest()
         {
             _controller.Post(new Organization());
-            _repository.Received(1).Create(Arg.Any<Organization>());
+            _service.Received(1).Create(Arg.Any<Organization>());
         }
 
         [Fact]
@@ -75,19 +77,19 @@ namespace XUnitTests.ControllerTests
         public void UpdateGoodTest()
         {
             _controller.Put(0, new Organization());
-            _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<Organization>());
+            _service.Received(1).Update(Arg.Any<int>(), Arg.Any<Organization>());
         }
 
         [Fact]
         public void DeleteTest()
         {
             _controller.Delete(0);
-            _repository.Received(1).Delete(Arg.Any<int>());
+            _service.Received(1).Delete(Arg.Any<int>());
         }
 
         public void Dispose()
         {
-            _repository.ClearSubstitute();
+            _service.ClearSubstitute();
         }
     }
 }

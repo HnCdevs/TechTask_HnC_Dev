@@ -10,15 +10,6 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public override bool IsValid(Family item)
-        {
-            var business = Context.Businesses.Find(item.BusinessId);
-
-            if (business == null) return false;
-
-            var families = Context.Families.Where(x => x.BusinessId == business.Id).ToList();
-
-            return families.All(x => x.Name != item.Name);
-        }
+        
     }
 }

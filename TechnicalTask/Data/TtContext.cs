@@ -9,22 +9,7 @@ namespace TechnicalTask.Data
         public TtContext()
         {
         }
-
-        public virtual void SetAdded<T>(T item) where T : class
-        {
-            Entry(item).State = EntityState.Added;
-        }
-
-        public virtual void SetValues<T>(T entry, T item) where T : class
-        {
-            Entry(entry).CurrentValues.SetValues(item);
-        }
-
-        public virtual void SetDeleted<T>(T item) where T : class
-        {
-            Entry(item).State = EntityState.Deleted;
-        }
-
+        
         public TtContext(DbContextOptions<TtContext> options) : base(options)
         {
         }
@@ -49,5 +34,20 @@ namespace TechnicalTask.Data
         public virtual DbSet<Organization> Organizations { get; set; }
         public virtual DbSet<OrganizationCountry> OrganizationCountries { get; set; }
         public virtual DbSet<User> Users { get; set; }
+
+        public virtual void SetAdded<T>(T item) where T : class
+        {
+            Entry(item).State = EntityState.Added;
+        }
+
+        public virtual void SetValues<T>(T entry, T item) where T : class
+        {
+            Entry(entry).CurrentValues.SetValues(item);
+        }
+
+        public virtual void SetDeleted<T>(T item) where T : class
+        {
+            Entry(item).State = EntityState.Deleted;
+        }
     }
 }

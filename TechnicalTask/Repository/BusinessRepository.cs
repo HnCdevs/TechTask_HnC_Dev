@@ -10,15 +10,6 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public override bool IsValid(Business item)
-        {
-            var country = Context.Countries.Find(item.CountryId);
 
-            if (country == null) return false;
-
-            var businesses = Context.Businesses.Where(x => x.CountryId == country.Id).ToList();
-
-            return businesses.All(x => x.Name != item.Name);
-        }     
     }
 }

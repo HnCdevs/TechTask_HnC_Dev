@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
-using TechnicalTask.Repository;
+using TechnicalTask.Services;
 
 namespace TechnicalTask.Controllers
 {
@@ -11,14 +11,27 @@ namespace TechnicalTask.Controllers
     [Route("api/Organizations")]
     public class OrganizationsController : Controller
     {
-        private readonly OrganizationRepository _repository;
+        private readonly IService<Organization> _service;
         private readonly ILogger _logger;
 
-        public OrganizationsController(OrganizationRepository repository, ILoggerFactory loggerFactory)
+        public OrganizationsController(IService<Organization> service, ILoggerFactory loggerFactory)
         {
-            _repository = repository;
+            _service = service;
             _logger = loggerFactory.CreateLogger("Organizations Controller");
         }
+
+        //Get: api/Organizations/Tree
+        /// <summary>
+        /// Get the tree.
+        /// </summary>
+        /// <returns>Returns whole tree.</returns>
+        [HttpGet]
+        [Route("Tree")]
+        public IEnumerable<Organization> GetTree()
+        {
+            return null;
+        }
+
 
         // GET: api/Organizations
         /// <summary>
@@ -29,7 +42,7 @@ namespace TechnicalTask.Controllers
         public IEnumerable<Organization> Get()
         {
             _logger.LogInformation("Organizations.Get called. Without arguments.");
-            var organizations = _repository.GetList();
+            var organizations = _service.GetList();
 
             _logger.LogTrace("Organizations.Get ended. Return all Organizations.");
             return organizations;
@@ -45,7 +58,7 @@ namespace TechnicalTask.Controllers
         public Organization Get(int id)
         {
             _logger.LogInformation($"Organizations.Get called. Arguments: Id = {id}.");
-            var organization = _repository.GetItem(id);
+            var organization = _service.GetItem(id);
 
             _logger.LogTrace($"Organizations.Get ended. Return Organization with Id = {id}.");
             return organization;
@@ -66,7 +79,7 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Organizations.Post called. Arguments: organization Name = {organization.Name}.");
 
-            _repository.Create(organization);
+            _service.Create(organization);
             _logger.LogTrace("Organizations.Post ended. Organization successfully created.");
         }
 
@@ -86,7 +99,7 @@ namespace TechnicalTask.Controllers
             }
             _logger.LogInformation($"Organizations.Put called. Arguments: Id = {id}, organization Name = {organization.Name}.");
 
-            _repository.Update(id, organization);
+            _service.Update(id, organization);
             _logger.LogTrace("Organizations.Put ended. Organization successfully updated.");
         }
 
@@ -100,7 +113,7 @@ namespace TechnicalTask.Controllers
         {
             _logger.LogInformation($"Organizations.Delete called. Arguments: Id = {id}.");
 
-            _repository.Delete(id);
+            _service.Delete(id);
             _logger.LogTrace("Organizations.Delete ended. Organization successfully deleted.");
         }
     }

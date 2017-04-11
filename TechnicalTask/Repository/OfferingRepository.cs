@@ -10,15 +10,6 @@ namespace TechnicalTask.Repository
         {
         }
 
-        public override bool IsValid(Offering item)
-        {
-            var family = Context.Families.Find(item.FamilyId);
-
-            if (family == null) return false;
-
-            var offerings = Context.Offerings.Where(x => x.FamilyId == family.Id).ToList();
-
-            return offerings.All(x => x.Name != item.Name);
-        }       
+        
     }
 }

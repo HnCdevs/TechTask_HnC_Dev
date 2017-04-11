@@ -11,13 +11,13 @@ using Xunit;
 
 namespace XUnitTests.RepositoryTests
 {
-    public class OrganizationRepositoryTests : IDisposable
+    public class OrganizationServiceTests : IDisposable
     {
         //private readonly DbSet<Organization> _organizationsSet;
         private readonly TtContext _context;
         private readonly OrganizationRepository _repository;
 
-        public OrganizationRepositoryTests()
+        public OrganizationServiceTests()
         {
             var organizationsList = new List<Organization>
             {

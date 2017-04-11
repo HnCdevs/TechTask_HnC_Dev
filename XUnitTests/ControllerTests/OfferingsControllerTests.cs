@@ -8,13 +8,14 @@ using TechnicalTask.Controllers;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
+using TechnicalTask.Services;
 using Xunit;
 
 namespace XUnitTests.ControllerTests
 {
     public class OfferingsControllerTests : IDisposable
     {
-        private readonly OfferingRepository _repository;
+        private readonly OfferingService _service;
         private readonly OfferingsController _controller;
 
         public OfferingsControllerTests()
@@ -27,15 +28,17 @@ namespace XUnitTests.ControllerTests
             }.AsQueryable();
 
             var mockContext = Substitute.For<TtContext>();
-            _repository = Substitute.For<OfferingRepository>(mockContext);
-            _repository.GetList().Returns(list);
-            _repository.GetItem(Arg.Any<int>()).Returns(new Offering { Id = 1, Name = "test 1", FamilyId = 1 });
-            _repository.Create(Arg.Any<Offering>());
-            _repository.Update(Arg.Any<int>(), Arg.Any<Offering>());
-            _repository.Delete(Arg.Any<int>());
+            var offeringRepository = Substitute.For<Repository<Offering>>(mockContext);
+            var familyRepository = Substitute.For<Repository<Family>>(mockContext);
+            _service = Substitute.For<OfferingService>(offeringRepository, familyRepository);
+            _service.GetList().Returns(list);
+            _service.GetItem(Arg.Any<int>()).Returns(new Offering { Id = 1, Name = "test 1", FamilyId = 1 });
+            _service.Create(Arg.Any<Offering>());
+            _service.Update(Arg.Any<int>(), Arg.Any<Offering>());
+            _service.Delete(Arg.Any<int>());
 
             var mockLogger = Substitute.For<ILoggerFactory>();
-            _controller = new OfferingsController(_repository, mockLogger);
+            _controller = new OfferingsController(_service, mockLogger);
         }
 
         [Fact]
@@ -61,15 +64,15 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void CreateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Offering>()).Returns(true);
+            _service.IsValid(Arg.Any<Offering>()).Returns(true);
             _controller.Post(new Offering());
-            _repository.Received(1).Create(Arg.Any<Offering>());
+            _service.Received(1).Create(Arg.Any<Offering>());
         }
 
         [Fact]
         public void CreateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Offering>()).Returns(false);
+            _service.IsValid(Arg.Any<Offering>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Post(new Offering()));
         }
 
@@ -82,15 +85,15 @@ namespace XUnitTests.ControllerTests
         [Fact]
         public void UpdateGoodTest()
         {
-            _repository.IsValid(Arg.Any<Offering>()).Returns(true);
+            _service.IsValid(Arg.Any<Offering>()).Returns(true);
             _controller.Put(0, new Offering());
-            _repository.Received(1).Update(Arg.Any<int>(), Arg.Any<Offering>());
+            _service.Received(1).Update(Arg.Any<int>(), Arg.Any<Offering>());
         }
 
         [Fact]
         public void UpdateInvalidTest()
         {
-            _repository.IsValid(Arg.Any<Offering>()).Returns(false);
+            _service.IsValid(Arg.Any<Offering>()).Returns(false);
             Assert.Throws<ArgumentException>(() => _controller.Put(0, new Offering()));
         }
 
@@ -98,12 +101,12 @@ namespace XUnitTests.ControllerTests
         public void DeleteTest()
         {
             _controller.Delete(0);
-            _repository.Received(1).Delete(Arg.Any<int>());
+            _service.Received(1).Delete(Arg.Any<int>());
         }
 
         public void Dispose()
         {
-            _repository.ClearSubstitute();
+            _service.ClearSubstitute();
         }
     }
 }
