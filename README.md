@@ -3,8 +3,12 @@
 This application provides API for data that related the structure of company.
 
 ## Getting Started
+Application host is: https://localhost:44336
 For starting application use Microsoft Visual Studio 2017.
 LocalDB is used in the application and no any configuration needed for run.
+Before using POST/PUT/DELETE request you can manually authenticate with LinkedIn account go to https://localhost:44336/login
+Otherwise you will be automatically redirected to the login page when you try to make a call to the methods that required for authorization.
+To logout from application go to https://localhost:44336/logout
 
 ## External authentication
 LinkedIn external provider uses for authentication. 
@@ -321,3 +325,7 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "address": "string"
 }
 ```
+------------------------------------------------
+
+## Issues
+In Swagger UI response model examples include collection, but real response is not.
