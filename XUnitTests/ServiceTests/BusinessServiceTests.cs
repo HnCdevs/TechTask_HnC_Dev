@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using NSubstitute.ClearExtensions;
 using TechnicalTask.Data;
@@ -33,6 +32,7 @@ namespace XUnitTests.ServiceTests
             _businessRepository = Substitute.For<Repository<Business>>(context);
 
             _businessRepository.GetList().Returns(businessesList);
+            _businessRepository.GetItem(Arg.Any<int>()).Returns(new Business { Id = 1, Name = "test 1", CountryId = 1 });
 
             _service = new BusinessService(_businessRepository, _countryRepository);
         }
@@ -61,6 +61,19 @@ namespace XUnitTests.ServiceTests
             _countryRepository.GetItem(Arg.Any<int>()).Returns(expected);
 
             Assert.Equal(false, _service.IsValid(new Business { Name = "test 2", CountryId = 1 }));
+        }
+
+        [Fact]
+        public void GetListTest()
+        {
+            Assert.Equal(3, _service.GetList().Count());
+        }
+
+        [Fact]
+        public void GetItemTest()
+        {
+            var business = _service.GetItem(1);
+            Assert.Equal(1, business.Id);
         }
 
         public void Dispose()

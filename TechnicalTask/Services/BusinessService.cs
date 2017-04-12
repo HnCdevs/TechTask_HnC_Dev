@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -15,6 +14,28 @@ namespace TechnicalTask.Services
         {
             _businessRepository = businessRepository;
             _countryRepository = countryRepository;
+        }
+
+        public override IEnumerable<Business> GetList()
+        {
+            var businesses = from item
+                in _businessRepository.GetList()
+                select new Business { Id = item.Id, CountryId = item.CountryId, Name = item.Name };
+
+            return businesses;
+        }
+
+        public override Business GetItem(int id)
+        {
+            var item = _businessRepository.GetItem(id);
+            var business = new Business
+            {
+                Id = item.Id,
+                CountryId = item.CountryId,
+                Name = item.Name
+            };
+
+            return business;
         }
 
         public override bool IsValid(Business item)

@@ -13,7 +13,7 @@ namespace TechnicalTask.Models
         public string Code { get; set; }
 
         public ICollection<OrganizationCountry> OrganizationCountries { get; set; }
-        //[NotMapped]
+
         public ICollection<Business> Businesses { get; set; }
 
         public Country()

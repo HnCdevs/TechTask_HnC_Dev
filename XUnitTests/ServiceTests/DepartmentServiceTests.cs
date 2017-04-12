@@ -75,7 +75,7 @@ namespace XUnitTests.ServiceTests
         [Fact]
         public void GetItemTest()
         {
-            var department = _departmentRepository.GetItem(1);
+            var department = _service.GetItem(1);
             Assert.Equal(1, department.Id);
         }
 

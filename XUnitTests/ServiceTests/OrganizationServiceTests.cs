@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using NSubstitute.ClearExtensions;
 using TechnicalTask.Data;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
+using TechnicalTask.Services;
 using Xunit;
 
-namespace XUnitTests.RepositoryTests
+namespace XUnitTests.ServiceTests
 {
     public class OrganizationServiceTests : IDisposable
     {
-        //private readonly DbSet<Organization> _organizationsSet;
-        private readonly TtContext _context;
-        private readonly OrganizationRepository _repository;
+        private readonly Repository<Organization> _repository;
+        private readonly OrganizationService _service;
 
         public OrganizationServiceTests()
         {
@@ -25,27 +24,23 @@ namespace XUnitTests.RepositoryTests
                 new Organization { Id = 2, Name = "test 2" }
             }.AsQueryable();
 
-            var organizationsSet = Substitute.For<DbSet<Organization>, IQueryable<Organization>>();
-            ((IQueryable<Organization>)organizationsSet).Provider.Returns(organizationsList.Provider);
-            ((IQueryable<Organization>)organizationsSet).Expression.Returns(organizationsList.Expression);
-            ((IQueryable<Organization>)organizationsSet).ElementType.Returns(organizationsList.ElementType);
-            ((IQueryable<Organization>)organizationsSet).GetEnumerator().Returns(organizationsList.GetEnumerator());          
+            var context = Substitute.For<TtContext>();
+            _repository = Substitute.For<Repository<Organization>>(context);
 
-            _context = Substitute.For<TtContext>();
-            _context.Organizations.Returns(organizationsSet);
+            _repository.GetList().Returns(organizationsList);
 
-            _repository = new OrganizationRepository(_context);
+            _service = new OrganizationService(_repository);
         }
 
         [Fact]
-        public void GetListTests()
+        public void GetTreeTests()
         {
-            Assert.Equal(2, _repository.GetList().Count());
+            Assert.Equal(2, _service.GetTree().Count());
         }
 
         public void Dispose()
         {
-            _context.ClearSubstitute();
+            _repository.ClearSubstitute();
         }
     }
 }

@@ -28,22 +28,18 @@ namespace TechnicalTask.Repository
 
         public virtual void Create(T item)
         {
-            //Entities.Add(item);
             _context.SetAdded(item);
             _context.SaveChanges();
         }
 
         public virtual void Update(T entry, T item)
         {
-            //var entry = GetItem(id);
             _context.SetValues(entry, item);
             _context.SaveChanges();
         }
 
         public void Delete(T item)
         {
-            //var item = GetItem(id);     
-            //Entities.Remove(item);
             _context.SetDeleted(item);
             _context.SaveChanges();
         }

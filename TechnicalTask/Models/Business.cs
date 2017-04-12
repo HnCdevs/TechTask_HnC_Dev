@@ -13,7 +13,6 @@ namespace TechnicalTask.Models
 
         public int CountryId { get; set; }
 
-        //[NotMapped]
         public ICollection<Family> Families { get; set; }
 
         public Business()

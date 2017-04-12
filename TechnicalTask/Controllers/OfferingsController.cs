@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
@@ -9,6 +10,7 @@ namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     [Route("api/Offerings")]
+    [Authorize]
     public class OfferingsController : Controller
     {
         private readonly IService<Offering> _service;
@@ -26,6 +28,7 @@ namespace TechnicalTask.Controllers
         /// </summary>
         /// <returns>Returns a list of offerings.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<Offering> Get()
         {
             _logger.LogInformation("Offerings.Get called. Without arguments.");
@@ -42,6 +45,7 @@ namespace TechnicalTask.Controllers
         /// <param name="id">Offering id.</param>
         /// <returns>Returns a single offering.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public Offering Get(int id)
         {
             _logger.LogInformation($"Offerings.Get called. Arguments: Id = {id}.");

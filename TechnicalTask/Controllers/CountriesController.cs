@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
@@ -9,6 +10,7 @@ namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     [Route("api/Countries")]
+    [Authorize]
     public class CountriesController : Controller
     {
         private readonly IService<Country> _service;
@@ -26,6 +28,7 @@ namespace TechnicalTask.Controllers
         /// </summary>
         /// <returns>Returns a list of countries.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<Country> Get()
         {
             _logger.LogInformation("Countries.Get called. Without arguments.");
@@ -42,6 +45,7 @@ namespace TechnicalTask.Controllers
         /// <param name="id">Country id.</param>
         /// <returns>Returns a single country.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public Country Get(int id)
         {
             _logger.LogInformation($"Countries.Get called. Arguments: Id = {id}.");

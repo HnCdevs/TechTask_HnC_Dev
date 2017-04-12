@@ -26,6 +26,13 @@ namespace XUnitTests.ServiceTests
                 new OrganizationCountry { Id = 2, OrganizationId = 2, CountryId = 2, Country = new Country { Name = "test 1" }},
                 new OrganizationCountry { Id = 3, OrganizationId = 1, CountryId = 3, Country = new Country { Name = "test 4" }}
             }.AsQueryable();
+
+            var countriesList = new List<Country>
+            {
+                new Country { Id = 1, Name = "test 1" },
+                new Country { Id = 2, Name = "test 2" },
+                new Country { Id = 3, Name = "test 3" }
+            };
             
             var context = Substitute.For<TtContext>();
 
@@ -34,6 +41,8 @@ namespace XUnitTests.ServiceTests
             _countryRepository = Substitute.For<Repository<Country>>(context);
 
             _organizationCountryRepository.GetList().Returns(organizationCountriesList);
+            _countryRepository.GetList().Returns(countriesList);
+            _countryRepository.GetItem(Arg.Any<int>()).Returns(new Country { Id = 1, Name = "test 1", OrganizationCountries = organizationCountriesList.ToList()});
 
             _service = new CountryService(_countryRepository, _organizationCountryRepository, _organizationRepository);
         }
@@ -91,6 +100,19 @@ namespace XUnitTests.ServiceTests
 
             _service.Create(country);
             _countryRepository.Received(1).Create(country);
+        }
+
+        [Fact]
+        public void GetListTest()
+        {
+            Assert.Equal(3, _service.GetList().Count());
+        }
+
+        [Fact]
+        public void GetItemTest()
+        {
+            var country = _service.GetItem(1);
+            Assert.Equal(1, country.Id);
         }
 
         public void Dispose()

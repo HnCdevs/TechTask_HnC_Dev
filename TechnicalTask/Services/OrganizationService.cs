@@ -17,11 +17,6 @@ namespace TechnicalTask.Services
 
         public virtual IEnumerable<Organization> GetTree()
         {
-            return null;
-        }
-
-        public override IEnumerable<Organization> GetList()
-        {
             var organizations = _organizationRepository.GetList()
                 .AsQueryable()
                 .Include(x => x.OrganizationCountries)

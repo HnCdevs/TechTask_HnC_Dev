@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
@@ -9,6 +10,7 @@ namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     [Route("api/Families")]
+    [Authorize]
     public class FamiliesController : Controller
     {
         private readonly IService<Family> _service;
@@ -26,6 +28,7 @@ namespace TechnicalTask.Controllers
         /// </summary>
         /// <returns>Returns a list of families.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<Family> Get()
         {
             _logger.LogInformation("Families.Get called. Without arguments.");
@@ -42,6 +45,7 @@ namespace TechnicalTask.Controllers
         /// <param name="id">Family id.</param>
         /// <returns>Returns a single family.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public Family Get(int id)
         {
             _logger.LogInformation($"Families.Get called. Arguments: Id = {id}.");

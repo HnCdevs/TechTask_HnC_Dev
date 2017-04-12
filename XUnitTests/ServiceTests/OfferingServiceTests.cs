@@ -32,6 +32,7 @@ namespace XUnitTests.ServiceTests
             _offeringRepository = Substitute.For<Repository<Offering>>(context);
 
             _offeringRepository.GetList().Returns(offeringsList);
+            _offeringRepository.GetItem(Arg.Any<int>()).Returns(new Offering { Id = 1, Name = "test 1", FamilyId = 1 });
 
             _service = new OfferingService(_offeringRepository, _familyRepository);
         }
@@ -60,6 +61,19 @@ namespace XUnitTests.ServiceTests
             _familyRepository.GetItem(Arg.Any<int>()).Returns(expected);
 
             Assert.Equal(false, _service.IsValid(new Offering { Name = "test 2", FamilyId = 1 }));
+        }
+
+        [Fact]
+        public void GetListTest()
+        {
+            Assert.Equal(3, _service.GetList().Count());
+        }
+
+        [Fact]
+        public void GetItemTest()
+        {
+            var offering = _service.GetItem(1);
+            Assert.Equal(1, offering.Id);
         }
 
         public void Dispose()

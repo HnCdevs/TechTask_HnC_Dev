@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
@@ -9,6 +10,7 @@ namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     [Route("api/Departments")]
+    [Authorize]
     public class DepartmentsController : Controller
     {
         private readonly IService<Department> _service;
@@ -26,6 +28,7 @@ namespace TechnicalTask.Controllers
         /// </summary>
         /// <returns>Returns a list of departments.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<Department> Get()
         {
             _logger.LogInformation("Departments.Get called. Without arguments.");
@@ -42,6 +45,7 @@ namespace TechnicalTask.Controllers
         /// <param name="id">Department id.</param>
         /// <returns>Returns a single department.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public Department Get(int id)
         {
             _logger.LogInformation($"Departments.Get called. Arguments: Id = {id}.");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
@@ -9,6 +10,7 @@ namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     [Route("api/Organizations")]
+    [Authorize]
     public class OrganizationsController : Controller
     {
         private readonly IService<Organization> _service;
@@ -26,10 +28,15 @@ namespace TechnicalTask.Controllers
         /// </summary>
         /// <returns>Returns whole tree.</returns>
         [HttpGet]
+        [AllowAnonymous]
         [Route("Tree")]
         public IEnumerable<Organization> GetTree()
         {
-            return null;
+            _logger.LogInformation("Organizations.GetTree called. Without arguments.");
+            var tree = (_service as OrganizationService)?.GetTree();
+
+            _logger.LogTrace("Organizations.GetTree ended. Return whole tree.");
+            return tree;
         }
 
 
@@ -39,6 +46,7 @@ namespace TechnicalTask.Controllers
         /// </summary>
         /// <returns>Returns a list of organizations.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<Organization> Get()
         {
             _logger.LogInformation("Organizations.Get called. Without arguments.");
@@ -55,6 +63,7 @@ namespace TechnicalTask.Controllers
         /// <param name="id">Organization id.</param>
         /// <returns>Returns a single organization.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public Organization Get(int id)
         {
             _logger.LogInformation($"Organizations.Get called. Arguments: Id = {id}.");

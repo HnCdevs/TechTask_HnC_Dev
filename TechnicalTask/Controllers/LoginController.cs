@@ -1,12 +1,14 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using TechnicalTask.Models;
 
 namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     public class LoginController : Controller
     {
+        /// <summary>
+        /// Get login result.
+        /// </summary>
+        /// <returns>Returns result string.</returns>
         [HttpGet]
         [Route("/LoggedIn")]
         public string GetLoggedIn()
@@ -14,6 +16,10 @@ namespace TechnicalTask.Controllers
             return "Login successful";
         }
 
+        /// <summary>
+        /// Get logout result.
+        /// </summary>
+        /// <returns>Returns result string.</returns>
         [HttpGet]
         [Route("/LoggedOut")]
         public string GetLoggedOut()
@@ -21,5 +27,4 @@ namespace TechnicalTask.Controllers
             return "Logout successful";
         }
     }
-
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -15,19 +16,27 @@ namespace TechnicalTask.Services
             _familyRepository = familyRepository;
         }
 
-        //public override IEnumerable<Offering> GetList()
-        //{
-        //    var offerings = _offeringRepository.GetList();
-        //    var newOfferings = offerings.Select(offering => new Offering
-        //        {
-        //            Id = offering.Id,
-        //            Name = offering.Name,
-        //            FamilyId = offering.FamilyId
-        //        })
-        //        .ToList();
+        public override IEnumerable<Offering> GetList()
+        {
+            var offerings = from item 
+                     in _offeringRepository.GetList()
+                     select new Offering { Id = item.Id, FamilyId = item.FamilyId, Name = item.Name };
 
-        //    return newOfferings;
-        //}
+            return offerings;
+        }
+
+        public override Offering GetItem(int id)
+        {
+            var item = _offeringRepository.GetItem(id);
+            var offering = new Offering
+            {
+                Id = item.Id,
+                FamilyId = item.FamilyId,
+                Name = item.Name
+            };
+
+            return offering;
+        }
 
         public override bool IsValid(Offering item)
         {

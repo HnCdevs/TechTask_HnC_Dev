@@ -13,7 +13,6 @@ namespace TechnicalTask.Models
 
         public int BusinessId { get; set; }
 
-        //[NotMapped]
         public ICollection<Offering> Offerings { get; set; }
 
         public Family()

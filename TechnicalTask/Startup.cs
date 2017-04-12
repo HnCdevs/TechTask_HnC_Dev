@@ -1,11 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -58,9 +56,6 @@ namespace TechnicalTask
                 options.UseSqlServer(Configuration.GetConnectionString("DbConnection"));
             });
 
-            //services.AddIdentity<User, IdentityRole>()
-            //    .AddDefaultTokenProviders();
-
             services.AddAuthentication(
                 options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -106,22 +101,7 @@ namespace TechnicalTask
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            loggerFactory.AddFile("Logs/testlog.txt");
-
-            //app.UseIdentity();
-            //app.UseGoogleAuthentication(new GoogleOptions()
-            //{
-            //    ClientId = Configuration["Authentication:Google:ClientId"],
-            //    ClientSecret = Configuration["Authentication:Google:ClientSecret"]
-            //});
-
-            //app.UseLinkedInAuthentication(new LinkedInOptions
-            //{
-            //    ClientId = null,
-            //    ClientSecret = null
-            //});
-
-            
+            loggerFactory.AddFile("Logs/testlog.txt");          
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -138,22 +118,19 @@ namespace TechnicalTask
                 LogoutPath = new PathString("/logout")
             });
 
-
-            var callbalck = new PathString("/signin-linkedin");
             // Add the OAuth2 middleware
             app.UseOAuthAuthentication(new OAuthOptions
             {
                 AuthenticationScheme = "LinkedIn",
                 ClientId = Configuration["Authentication:LinkedIn:ClientId"],
                 ClientSecret = Configuration["Authentication:LinkedIn:ClientSecret"],
-                CallbackPath = callbalck,
+                CallbackPath = new PathString("/signin-linkedin"),
                 AuthorizationEndpoint = "https://www.linkedin.com/oauth/v2/authorization",
                 TokenEndpoint = "https://www.linkedin.com/oauth/v2/accessToken",
                 UserInformationEndpoint = "https://api.linkedin.com/v1/people/~:(id,formatted-name,email-address,picture-url)",
-                Scope = { "r_basicprofile"},
+                Scope = { "r_basicprofile" },
             });
 
-            // Listen for requests on the /login path, and issue a challenge to log in with the LinkedIn middleware
             // Listen for requests on the /login path, and issue a challenge to log in with the LinkedIn middleware
             app.Map("/login", builder =>
             {
@@ -192,19 +169,6 @@ namespace TechnicalTask
             _container.RegisterMvcViewComponents(app);
 
             // Add application services. For instance:
-            //IServiceProvider provider = app.ApplicationServices;
-            //_container.Register(provider.GetRequiredService<UserManager<User>>);
-            //_container.Register(provider.GetRequiredService<SignInManager<User>>);
-
-
-            //_container.Register<IUserStore<User>>(() => new UserStore<User>(_container.GetInstance<TtContext>()),Lifestyle.Scoped);
-            //_container.RegisterInitializer<ApplicationUserManager>(manager => InitializeUserManager(manager, app));
-
-            //_container.Register<UserManager<User>>(() => new UserManager<User>(new UserStore<User>()),Lifestyle.Scoped);
-
-            //_container.Register<IUserStore<User>>(() => new UserStore<User>(_container.GetInstance<TtContext>()), Lifestyle.Scoped);
-            //_container.Register<UserManager<User>>(Lifestyle.Scoped);
-
             _container.Register<IRepository<User>, Repository<User>>(Lifestyle.Scoped);
             _container.Register<IRepository<OrganizationCountry>, Repository<OrganizationCountry>>(Lifestyle.Scoped);
             _container.Register<IRepository<Country>, Repository<Country>>(Lifestyle.Scoped);

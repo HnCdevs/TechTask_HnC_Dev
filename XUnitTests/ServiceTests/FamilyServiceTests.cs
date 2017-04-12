@@ -32,6 +32,7 @@ namespace XUnitTests.ServiceTests
             _familyRepository = Substitute.For<Repository<Family>>(context);
 
             _familyRepository.GetList().Returns(familiesList);
+            _familyRepository.GetItem(Arg.Any<int>()).Returns(new Family { Id = 1, Name = "test 1", BusinessId = 1 });
 
             _service = new FamilyService(_familyRepository, _businessRepository);
         }
@@ -60,6 +61,19 @@ namespace XUnitTests.ServiceTests
             _businessRepository.GetItem(Arg.Any<int>()).Returns(expected);
 
             Assert.Equal(false, _service.IsValid(new Family { Name = "test 2", BusinessId = 1 }));
+        }
+
+        [Fact]
+        public void GetListTest()
+        {
+            Assert.Equal(3, _service.GetList().Count());
+        }
+
+        [Fact]
+        public void GetItemTest()
+        {
+            var family = _service.GetItem(1);
+            Assert.Equal(1, family.Id);
         }
 
         public void Dispose()

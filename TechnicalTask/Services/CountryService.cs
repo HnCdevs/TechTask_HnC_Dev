@@ -16,7 +16,30 @@ namespace TechnicalTask.Services
             _countryRepository = countryRepository;
             _organizationCountryRepository = organizationCountryRepository;
             _organizationRepository = organizationRepository;
-        }       
+        }
+
+        public override IEnumerable<Country> GetList()
+        {
+            var countries = from item
+                in _countryRepository.GetList()
+                select new Country { Id = item.Id, OrganizationCountries = item.OrganizationCountries, Name = item.Name, Code = item.Code };
+
+            return countries;
+        }
+
+        public override Country GetItem(int id)
+        {
+            var item = _countryRepository.GetItem(id);
+            var country = new Country
+            {
+                Id = item.Id,
+                OrganizationCountries = item.OrganizationCountries,
+                Name = item.Name,
+                Code = item.Code
+            };
+
+            return country;
+        }
 
         public override void Create(Country item)
         {

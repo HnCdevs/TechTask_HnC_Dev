@@ -27,8 +27,8 @@ namespace TechnicalTask.Controllers
         /// Get a list of users. 
         /// </summary>
         /// <returns>Returns a list of users.</returns>
-        [AllowAnonymous]
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<User> Get()
         {
             _logger.LogInformation("Users.Get called. Without arguments.");
@@ -45,6 +45,7 @@ namespace TechnicalTask.Controllers
         /// <param name="id">User id.</param>
         /// <returns>Returns a single user.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public User Get(int id)
         {
             _logger.LogInformation($"Users.Get called. Arguments: Id = {id}.");

@@ -1,8 +1,36 @@
+#Technical Task
+##Overview
+This application provides API for data that related the structure of company.
+
+##Getting Started
+For starting application use Microsoft Visual Studio 2017.
+LocalDB is used in the application and no any configuration needed for run.
+
+##External authentication
+LinkedIn external provider uses for authentication. 
+Go to the [LinkedIn Developer Portal](https://developer.linkedin.com/) and select My Apps from the top menu. Click on the Create Application button. You will need to complete all the information for your application, and once you are done click on the Submit button.
+You will be taken to a page which displays the detail about your new application, including the Client ID and Client Secret.
+
+In Visual Studio you may right click on the TechnicalTask project and select "Manage User Secrets" in context menu.
+You should paste you own values between brackets in the secret.json file.
+Example: 
+```json
+"Authentication:LinkedIn:ClientID": <client_id>, 
+"Authentication:LinkedIn:ClientSecret": <client_secret>.
+```
+
+Or execute the following commands in your project working directory to store the user secrets:
+```powershell
+dotnet user-secrets set Authentication:LinkedIn:ClientID <client_id>
+dotnet user-secrets set Authentication:LinkedIn:ClientSecret <client-secret>
+```
+
+##Request examples
 Json templates for API testing.
 Tip: Arrays in objects are not required, but if you want to create/update included object(-s) you may initialize array of the current (each) object.
 
-
-/api/Business 
+###/api/Business 
+```json
 [POST]
 {
   "name": "string",
@@ -54,9 +82,11 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
+```
 ------------------------------------------------
 
-/api/Countries
+###/api/Countries
+```json
 [POST]
 {
   "organizationId": 0,
@@ -70,9 +100,11 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "name": "string",
   "code": "string"
 }
+```
 ------------------------------------------------
 
-/api/Departments
+###/api/Departments
+```json
 [POST]
 {
   "name": "string",
@@ -85,9 +117,11 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "name": "string",
   "offeringId": 0
 }
+```
 ------------------------------------------------
 
-/api/Families
+###/api/Families
+```json
 [POST]
 {
   "name": "string",
@@ -126,9 +160,11 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
+```
 ------------------------------------------------
 
-/api/Offerings
+###/api/Offerings
+```json
 [POST]
 {
   "name": "string",
@@ -154,9 +190,11 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
+```
 ------------------------------------------------
 
-/api/Organizations
+###/api/Organizations
+```json
 [POST]
 {
   "name": "string",
@@ -247,9 +285,11 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
+```
 ------------------------------------------------
 
-/api/Users
+###/api/Users
+```json
 [POST]
 {
   "name": "string",
@@ -266,3 +306,4 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "email": "string",
   "address": "string"
 }
+```
