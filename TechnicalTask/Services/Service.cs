@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
 namespace TechnicalTask.Services
 {
-    public class Service<T> : IService<T> where T : class, IModel 
+    public class Service<T> : IService<T> where T : class 
     {
         private readonly IRepository<T> _repository;
 

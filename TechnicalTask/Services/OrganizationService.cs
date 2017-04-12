@@ -22,7 +22,14 @@ namespace TechnicalTask.Services
 
         public override IEnumerable<Organization> GetList()
         {
-            var organizations = _organizationRepository.GetList().AsQueryable().Include(x => x.OrganizationCountries).ThenInclude(x => x.Country).ThenInclude(x => x.Businesses).ThenInclude(x => x.Families).ThenInclude(x => x.Offerings).ThenInclude(x => x.Departments);
+            var organizations = _organizationRepository.GetList()
+                .AsQueryable()
+                .Include(x => x.OrganizationCountries)
+                .ThenInclude(x => x.Country)
+                .ThenInclude(x => x.Businesses)
+                .ThenInclude(x => x.Families)
+                .ThenInclude(x => x.Offerings)
+                .ThenInclude(x => x.Departments);
             return organizations;
         }
     }

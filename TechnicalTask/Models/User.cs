@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace TechnicalTask.Models
 {
     [Table("Users")]
-    public class User : IModel
+    public class User/* : IdentityUser*/
     {
         public int Id { get; set; }
         public string Name { get; set; }

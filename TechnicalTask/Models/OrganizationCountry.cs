@@ -1,7 +1,10 @@
-﻿namespace TechnicalTask.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TechnicalTask.Models
 {
-    public class OrganizationCountry : IModel
+    public class OrganizationCountry
     {
+        [Key]
         public int Id { get; set; }
 
         public int OrganizationId { get; set; }

@@ -24,6 +24,8 @@ namespace TechnicalTask.Data
                 .HasOne(x => x.Country)
                 .WithMany(x => x.OrganizationCountries)
                 .HasForeignKey(x => x.CountryId);
+
+            //modelBuilder.Entity<Offering>().UsePropertyAccessMode()
         }
 
         public virtual DbSet<Business> Businesses { get; set; }

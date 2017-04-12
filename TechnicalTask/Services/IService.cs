@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using TechnicalTask.Models;
 
 namespace TechnicalTask.Services
 {
-    public interface IService<T> where T : IModel
+    public interface IService<T>
     {
         IEnumerable<T> GetList();
         T GetItem(int id);

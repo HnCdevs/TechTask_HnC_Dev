@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechnicalTask.Models;
@@ -9,6 +10,7 @@ namespace TechnicalTask.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly IService<User> _service;
@@ -25,6 +27,7 @@ namespace TechnicalTask.Controllers
         /// Get a list of users. 
         /// </summary>
         /// <returns>Returns a list of users.</returns>
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<User> Get()
         {

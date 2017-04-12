@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechnicalTask.Models
 {
     [Table("Families")]
-    public class Family : IModel
+    public class Family
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
 

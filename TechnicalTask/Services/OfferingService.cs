@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
 using TechnicalTask.Models;
 using TechnicalTask.Repository;
 
@@ -17,19 +15,19 @@ namespace TechnicalTask.Services
             _familyRepository = familyRepository;
         }
 
-        public override IEnumerable<Offering> GetList()
-        {
-            var offerings = _offeringRepository.GetList();
-            var newOfferings = offerings.Select(offering => new Offering
-                {
-                    Id = offering.Id,
-                    Name = offering.Name,
-                    FamilyId = offering.FamilyId
-                })
-                .ToList();
+        //public override IEnumerable<Offering> GetList()
+        //{
+        //    var offerings = _offeringRepository.GetList();
+        //    var newOfferings = offerings.Select(offering => new Offering
+        //        {
+        //            Id = offering.Id,
+        //            Name = offering.Name,
+        //            FamilyId = offering.FamilyId
+        //        })
+        //        .ToList();
 
-            return newOfferings;
-        }
+        //    return newOfferings;
+        //}
 
         public override bool IsValid(Offering item)
         {
