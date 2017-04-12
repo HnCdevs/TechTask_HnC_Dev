@@ -1,12 +1,12 @@
-#Technical Task
-##Overview
+# Technical Task
+## Overview
 This application provides API for data that related the structure of company.
 
-##Getting Started
+## Getting Started
 For starting application use Microsoft Visual Studio 2017.
 LocalDB is used in the application and no any configuration needed for run.
 
-##External authentication
+## External authentication
 LinkedIn external provider uses for authentication. 
 Go to the [LinkedIn Developer Portal](https://developer.linkedin.com/) and select My Apps from the top menu. Click on the Create Application button. You will need to complete all the information for your application, and once you are done click on the Submit button.
 You will be taken to a page which displays the detail about your new application, including the Client ID and Client Secret.
@@ -25,13 +25,13 @@ dotnet user-secrets set Authentication:LinkedIn:ClientID <client_id>
 dotnet user-secrets set Authentication:LinkedIn:ClientSecret <client-secret>
 ```
 
-##Request examples
+## Request examples
 Json templates for API testing.
 Tip: Arrays in objects are not required, but if you want to create/update included object(-s) you may initialize array of the current (each) object.
 
-###/api/Business 
+### /api/Business 
+#### [POST]
 ```json
-[POST]
 {
   "name": "string",
   "countryId": 0,
@@ -85,9 +85,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 ```
 ------------------------------------------------
 
-###/api/Countries
+### /api/Countries
+#### [POST]
 ```json
-[POST]
 {
   "organizationId": 0,
   "name": "string",
@@ -103,9 +103,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 ```
 ------------------------------------------------
 
-###/api/Departments
+### /api/Departments
+#### [POST]
 ```json
-[POST]
 {
   "name": "string",
   "offeringId": 0
@@ -120,9 +120,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 ```
 ------------------------------------------------
 
-###/api/Families
+### /api/Families
+#### [POST]
 ```json
-[POST]
 {
   "name": "string",
   "businessId": 0,
@@ -163,9 +163,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 ```
 ------------------------------------------------
 
-###/api/Offerings
+### /api/Offerings
+#### [POST]
 ```json
-[POST]
 {
   "name": "string",
   "familyId": 0,
@@ -193,13 +193,13 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 ```
 ------------------------------------------------
 
-###/api/Organizations
+### /api/Organizations
+#### [POST]
 ```json
-[POST]
 {
   "name": "string",
   "code": "string",
-  "organizationType": 1 (You can use numbers from 1 to 6),
+  "organizationType": 1,
   "owner": "string",
   "organizationCountries": [
     {
@@ -288,9 +288,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
 ```
 ------------------------------------------------
 
-###/api/Users
+### /api/Users
+#### [POST]
 ```json
-[POST]
 {
   "name": "string",
   "surname": "string",
