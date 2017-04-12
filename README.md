@@ -54,8 +54,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "id": 0,
   "name": "string",
@@ -93,8 +94,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "name": "string",
   "code": "string"
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "organizationId": 0,
   "name": "string",
@@ -110,8 +112,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "name": "string",
   "offeringId": 0
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "id": 0,
   "name": "string",
@@ -139,8 +142,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "id": 0,
   "name": "string",
@@ -176,8 +180,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "id": 0,
   "name": "string",
@@ -236,8 +241,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
     }
   ]
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "id": 0,
   "name": "string",
@@ -297,8 +303,9 @@ Tip: Arrays in objects are not required, but if you want to create/update includ
   "email": "string",
   "address": "string"
 }
-
-[PUT]
+```
+####[PUT]
+```json
 {
   "id": 0,
   "name": "string",
